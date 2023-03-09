@@ -6,9 +6,10 @@ import {
   Text,
   TextInput,
   Image,
+  ScrollView,
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
-import { ScrollView } from "react-native-web";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import globalStyle from "../components/global-style";
 import axios from "axios";
@@ -139,7 +140,7 @@ const ContactsScreen = (props) => {
 
         <SearchBar />
 
-        {searchText === "" ? null : (
+        {
           <>
             {searchUser ? (
               searchUser.map((user) => (
@@ -196,7 +197,7 @@ const ContactsScreen = (props) => {
               <Text>No results found.</Text>
             )}
           </>
-        )}
+        }
       </ScrollView>
     </View>
   );

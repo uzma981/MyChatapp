@@ -59,20 +59,21 @@ const AccountScreen = (props) => {
         console.log(error.response);
       });
   };
-  const uploadImage = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-      base64: false,
-      exif: true,
-    });
+  // const uploadImage = async () => {
+  //   const result = await ImagePicker.launchImageLibraryAsync({
+  //     mediaTypes: ImagePicker.MediaTypeOptions.Images,
+  //     allowsEditing: true,
+  //     aspect: [4, 3],
+  //     quality: 1,
+  //     base64: false,
+  //     exif: true,
+  //onPictureSaved: (data) => sendToServer(data),
+  //   });
 
-    if (!result.cancelled) {
-      setImage(result.uri);
-    }
-  };
+  //   if (!result.cancelled) {
+  //     setImage(result.uri);
+  //   }
+  // };
 
   const handleUpdate = async (values) => {
     const token = await AsyncStorage.getItem("token");
