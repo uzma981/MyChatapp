@@ -12,19 +12,22 @@ const AddContactSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email"),
 });
 const AddContact = () => {
-  const handleaddContact = async (values) => {
+  const handleaddContact9 = async (values) => {
     const token = await AsyncStorage.getItem("token");
-
-    const id = await AsyncStorage.getItem("id");
 
     const headers = {
       "X-Authorization": token,
       "Content-Type": "application/json",
     };
+    const searchParams = new URLSearchParams({
+      email: values.email,
+      first_name: values.firstName,
+      last_name: values.lastName,
+    });
 
     axios
       .post(
-        `http://localhost:3333/api/1.0.0/user/${id}/contact`,
+        `http://localhost:3333/api/1.0.0/user/${user_id}/contact`,
 
         {
           first_name: values.firstName,

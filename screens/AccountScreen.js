@@ -15,7 +15,6 @@ import Logout from "../components/Account/Logout";
 import axios from "axios";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import ViewBlocked from "../components/Account/ViewBlocked";
 import * as ImagePicker from "expo-image-picker";
 
 const UpdateSchema = Yup.object().shape({
@@ -48,9 +47,13 @@ const AccountScreen = (props) => {
           "X-Authorization": token,
           "Content-Type": "image/png",
         },
+        responseType: "blob",
       })
       .then(function (response) {
         console.log(response);
+        const url = URL.createObjectURL(response.data);
+        console.log(url);
+        setImage(url);
       })
       .catch(function (error) {
         console.log(error.response);

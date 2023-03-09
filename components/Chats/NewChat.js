@@ -15,6 +15,7 @@ export default function NewChat(props) {
   const { navigation } = props;
   const [name, setname] = useState("");
 
+  //api call - Start a new conversation POST :/chat
   const addChat = async () => {
     const token = await AsyncStorage.getItem("token");
     const headers = {
