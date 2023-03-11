@@ -6,6 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useState } from "react";
@@ -47,13 +48,14 @@ export default function NewChat(props) {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => navigation.navigate("Chat")}>
-        <Text>Back</Text>
-      </TouchableOpacity>
-
       <ScrollView>
         <View style={styles.headerContainer}>
           <Text style={styles.headerText}>Add New Chat</Text>
+        </View>
+        <View style={styles.icon}>
+          <TouchableOpacity onPress={() => navigation.navigate("Chat")}>
+            <Ionicons name="arrow-back" size={20} color="black"></Ionicons>
+          </TouchableOpacity>
         </View>
         <View style={styles.convoContainer}>
           <TextInput
@@ -94,16 +96,19 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   icon: {
-    alignItems: "flex-end",
+    alignItems: "flex-start",
     marginRight: 16,
     marginBottom: 10,
+    marginLeft: 8,
   },
   convoContainer: {
     justifyContent: "center",
+
     padding: 20,
     marginTop: 20,
   },
   textContainer: {
     height: 40,
+    justifyContent: "center",
   },
 });
