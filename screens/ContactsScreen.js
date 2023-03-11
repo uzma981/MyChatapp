@@ -19,6 +19,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 const ContactsScreen = (props) => {
   const [contacts, setContacts] = useState([]);
+  const [loaded, setLoaded] = useState(false);
   const handleGetContact = async () => {
     const token = await AsyncStorage.getItem("token");
 
@@ -31,6 +32,7 @@ const ContactsScreen = (props) => {
       .then(function (response) {
         console.log(response);
         setContacts(response.data);
+        setLoaded(true);
       })
       .catch(function (error) {
         console.log(error.response);
@@ -42,7 +44,7 @@ const ContactsScreen = (props) => {
       handleGetContact();
     });
     return unsubscribe;
-  }, [handleGetContact, props.navigation]);
+  }, []);
   const getUserProfilePhoto = async (user_id) => {
     const token = await AsyncStorage.getItem("token");
 
@@ -77,7 +79,7 @@ const ContactsScreen = (props) => {
             <AntDesign name="adduser" size={20} color="black"></AntDesign>
           </TouchableOpacity>
         </View>
-        {
+        {loaded && (
           <>
             {contacts.map((contact) => (
               <View key={contact.user_id} style={styles.contactcontainer}>
@@ -111,7 +113,7 @@ const ContactsScreen = (props) => {
               </View>
             ))}
           </>
-        }
+        )}
       </ScrollView>
     </View>
   );
