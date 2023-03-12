@@ -7,15 +7,52 @@ import {
 } from "react-native";
 import React from "react";
 import { AntDesign } from "@expo/vector-icons";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useState, useEffect } from "react";
+import { useRoute } from "@react-navigation/native";
 
 import { Ionicons } from "@expo/vector-icons";
 
 export default function SingleChat(props) {
+  const [chats, setChats] = useState([]);
+  const [message, setMessage] = useState("");
+  const route = useRoute();
+  const { chatId } = route.params;
+
+  const viewSingleChat = async (chat_id) => {
+    const token = await AsyncStorage.getItem("token");
+
+    await axios
+      .get(`http://localhost:3333/api/1.0.0/chat/` + chat_id, {
+        headers: {
+          "X-Authorization": token,
+        },
+      })
+      .then(function (response) {
+        console.log(response);
+        console.log(response.data);
+        setChats(response.data);
+      })
+      .catch(function (error) {
+        console.log(error.response);
+      });
+  };
+
+  useEffect(() => {
+    const unsubscribe = props.navigation.addListener("focus", () => {
+      viewSingleChat(chatId);
+    });
+    return unsubscribe;
+  }, []);
   const InputBox = () => {
     return (
-      <View styles={styles.container}>
+      <View style={styles.container}>
         <View style={styles.mainContainer}>
-          <TextInput style={styles.textInput}></TextInput>
+          <TextInput
+            onChangeText={(text) => setMessage(text)}
+            style={styles.textInput}
+          ></TextInput>
           <TouchableOpacity>
             <View style={styles.btnContainer}>
               <Ionicons name="send" size={20} color="white" />
@@ -33,7 +70,10 @@ export default function SingleChat(props) {
           <AntDesign name="adduser" size={24} color="black" />
         </TouchableOpacity>
       </View>
+      <Text>Name: {chats.name}</Text>
+
       <InputBox />
+      {/* <Text>Message: {message}</Text> */}
     </View>
   );
 }

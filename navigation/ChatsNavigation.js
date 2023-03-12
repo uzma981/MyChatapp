@@ -20,10 +20,7 @@ export default function ChatsNavigation() {
         component={NewChat}
         options={{ headerShown: false }}
       ></Stack.Screen>
-      <Stack.Screen
-        name="Individual Chat"
-        component={SingleChat}
-      ></Stack.Screen>
+      <Stack.Screen name="Single Chat" component={SingleChat}></Stack.Screen>
       <Stack.Screen
         name="Add User"
         component={AddUsertoChat}
