@@ -14,7 +14,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import globalStyle from "../components/global-style";
 import axios from "axios";
 import { useState, useEffect } from "react";
-
+import { Entypo } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 
 const ContactsScreen = (props) => {
@@ -89,6 +89,27 @@ const ContactsScreen = (props) => {
       });
   };
 
+  const blockContact = async (user_id) => {
+    const token = await AsyncStorage.getItem("token");
+    await axios
+      .post(`http://localhost:3333/api/1.0.0/user/${user_id}/block`, null, {
+        headers: {
+          "X-Authorization": token,
+          "Content-Type": "image/png",
+        },
+      })
+      .then(function (response) {
+        console.log(response);
+        const updatedContacts = contacts.filter(
+          (contact) => contact.user_id !== user_id
+        );
+        setContacts(updatedContacts);
+      })
+      .catch(function (error) {
+        console.log(error.response);
+      });
+  };
+
   const { navigation } = props;
   return (
     <View style={styles.container}>
@@ -110,14 +131,15 @@ const ContactsScreen = (props) => {
                     <Text style={styles.name}>
                       {contact.first_name} {contact.last_name}
                     </Text>
-                    <TouchableOpacity style={styles.btnContainer}>
-                      <Ionicons
-                        name="chatbubble-ellipses-outline"
-                        size={20}
-                        color="white"
-                      />
+
+                    <TouchableOpacity
+                      onPress={() => blockContact(contact.user_id)}
+                      style={styles.btnContainer}
+                    >
+                      <Entypo name="block" size={20} color="black"></Entypo>
                     </TouchableOpacity>
                     <TouchableOpacity
+                      style={styles.btnContainer}
                       onPress={() => handleRemoveContact(contact.user_id)}
                     >
                       <Ionicons
@@ -183,10 +205,6 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   btnContainer: {
-    backgroundColor: "#fb5b5a",
-    borderRadius: 50,
-    width: 50,
-    height: 35,
     justifyContent: "center",
     alignItems: "center",
     marginTop: 5,
