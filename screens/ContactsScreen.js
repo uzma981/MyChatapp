@@ -45,6 +45,28 @@ const ContactsScreen = (props) => {
     });
     return unsubscribe;
   }, []);
+
+  const handleRemoveContact = async (user_id) => {
+    const token = await AsyncStorage.getItem("token");
+
+    await axios
+      .delete(`http://localhost:3333/api/1.0.0/user/${user_id}/contact`, {
+        headers: {
+          "X-Authorization": token,
+        },
+      })
+      .then(function (response) {
+        console.log(response);
+        // Filter out the removed contact from the contacts array
+        const updatedContacts = contacts.filter(
+          (contact) => contact.user_id !== user_id
+        );
+        setContacts(updatedContacts);
+      })
+      .catch(function (error) {
+        console.log(error.response);
+      });
+  };
   const getUserProfilePhoto = async (user_id) => {
     const token = await AsyncStorage.getItem("token");
 
@@ -83,28 +105,25 @@ const ContactsScreen = (props) => {
           <>
             {contacts.map((contact) => (
               <View key={contact.user_id} style={styles.contactcontainer}>
-                <TouchableOpacity
-                // onPress={() =>
-                //   navigation.navigate("Profile", { user_id: contact.id })
-                // }
-                >
-                  {/* <Image style={styles.image} source={{ uri: contact.photo_url }} /> */}
-                </TouchableOpacity>
                 <View style={styles.content}>
                   <View style={styles.row}>
                     <Text style={styles.name}>
                       {contact.first_name} {contact.last_name}
                     </Text>
-                    <TouchableOpacity
-                      style={styles.btnContainer}
-                      // onPress={() =>
-                      //   navigation.navigate("Chat", { user_id: contact.id })
-                      // }
-                    >
+                    <TouchableOpacity style={styles.btnContainer}>
                       <Ionicons
                         name="chatbubble-ellipses-outline"
                         size={20}
                         color="white"
+                      />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => handleRemoveContact(contact.user_id)}
+                    >
+                      <Ionicons
+                        name="remove-circle-outline"
+                        size={24}
+                        color="black"
                       />
                     </TouchableOpacity>
                   </View>

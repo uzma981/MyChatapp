@@ -56,22 +56,7 @@ const AddContact = (props) => {
         console.log(error.response);
       });
   };
-  const handleRemoveContact = async (user_id) => {
-    const token = await AsyncStorage.getItem("token");
 
-    await axios
-      .delete(`http://localhost:3333/api/1.0.0/user/${user_id}/contact`, {
-        headers: {
-          "X-Authorization": token,
-        },
-      })
-      .then(function (response) {
-        console.log(response);
-      })
-      .catch(function (error) {
-        console.log(error.response);
-      });
-  };
   const SearchBar = () => {
     return (
       <View style={styles.searchcontainer}>
@@ -80,7 +65,6 @@ const AddContact = (props) => {
           placeholder="Search here.."
           value={searchText}
           onChangeText={(text) => setSearchText(text)}
-          // onSubmitEditing={searchUsers}
           autoFocus={true}
         ></TextInput>
         <TouchableOpacity style={styles.button} onPress={searchUsers}>
@@ -145,17 +129,7 @@ const AddContact = (props) => {
                             <AntDesign name="adduser" size={24} color="black" />
                           </TouchableOpacity>
                         </View>
-                        <View style={styles.icon}>
-                          <TouchableOpacity
-                            onPress={() => handleRemoveContact(user.user_id)}
-                          >
-                            <Ionicons
-                              name="remove-circle-outline"
-                              size={24}
-                              color="black"
-                            />
-                          </TouchableOpacity>
-                        </View>
+                        <View style={styles.icon}></View>
                       </View>
                     </TouchableOpacity>
                   </View>
