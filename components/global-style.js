@@ -28,4 +28,37 @@ export default StyleSheet.create({
     textAlign: "center",
     color: "white",
   },
+  headerContainer: {
+    padding: 10,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  icon: {
+    alignItems: "flex-end",
+    marginRight: 16,
+    marginBottom: 10,
+  },
+  headerText: {
+    fontSize: 20,
+  },
+  appcontainer: {
+    backgroundColor: "white",
+    height: "100%",
+  },
+  singlecontainer: {
+    flexDirection: "row",
+    marginHorizontal: 10,
+    marginVertical: 5,
+    height: 70,
+    marginTop: 10,
+  },
+  singlecontainerContent: {
+    flex: 1,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: "lightgray",
+  },
+  singlecontainerRow: {
+    flexDirection: "row",
+    marginBottom: 5,
+  },
 });

@@ -59,6 +59,8 @@ const AccountScreen = (props) => {
         console.log(error.response);
       });
   };
+  //add a useeffect for the image
+
   // const uploadImage = async () => {
   //   const result = await ImagePicker.launchImageLibraryAsync({
   //     mediaTypes: ImagePicker.MediaTypeOptions.Images,

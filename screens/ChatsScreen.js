@@ -15,6 +15,7 @@ import { Entypo } from "@expo/vector-icons";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useState, useEffect } from "react";
+import globalStyle from "../components/global-style";
 const ChatsScreen = (props) => {
   const { navigation } = props;
   const [chats, setChats] = useState([]);
@@ -44,12 +45,12 @@ const ChatsScreen = (props) => {
     return unsubscribe;
   }, []);
   return (
-    <View style={styles.container}>
+    <View style={globalStyle.appcontainer}>
       <ScrollView>
-        <View style={styles.headerContainer}>
-          <Text style={styles.headerText}>Chats</Text>
+        <View style={globalStyle.headerContainer}>
+          <Text style={globalStyle.headerText}>Chats</Text>
         </View>
-        <View style={styles.icon}>
+        <View style={globalStyle.icon}>
           <TouchableOpacity onPress={() => navigation.navigate("New Chat")}>
             <Entypo name="new-message" size={24} color="black" />
           </TouchableOpacity>
@@ -61,7 +62,7 @@ const ChatsScreen = (props) => {
                 navigation.navigate("Single Chat", { chatId: chat.chat_id })
               }
               key={chat.chat_id}
-              style={styles.chatcontainer}
+              style={globalStyle.singlecontainer}
             >
               <Image
                 source={{
@@ -69,8 +70,8 @@ const ChatsScreen = (props) => {
                 }}
                 style={styles.image}
               />
-              <View style={styles.content}>
-                <View style={styles.row}>
+              <View style={globalStyle.singlecontainerContent}>
+                <View style={globalStyle.singlecontainerRow}>
                   <Text style={styles.name}>{chat.name}</Text>
                   <Text style={styles.subTitle}>
                     Time:
@@ -91,17 +92,6 @@ const ChatsScreen = (props) => {
   );
 };
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "white",
-    height: "100%",
-  },
-  headerText: {
-    fontSize: 20,
-  },
-  row: {
-    flexDirection: "row",
-    marginBottom: 5,
-  },
   name: {
     flex: 1,
     fontWeight: "bold",
@@ -112,29 +102,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     marginRight: 10,
   },
-  headerContainer: {
-    padding: 10,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  content: {
-    flex: 1,
 
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "lightgray",
-  },
-  icon: {
-    alignItems: "flex-end",
-    marginRight: 16,
-    marginBottom: 10,
-  },
-  chatcontainer: {
-    flexDirection: "row",
-    marginHorizontal: 10,
-    marginVertical: 5,
-    height: 70,
-    marginTop: 10,
-  },
   subTitle: {
     color: "gray",
   },

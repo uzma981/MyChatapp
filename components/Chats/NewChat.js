@@ -49,7 +49,7 @@ export default function NewChat(props) {
   return (
     <View style={styles.container}>
       <ScrollView>
-        <View style={styles.headerContainer}>
+        <View style={globalStyle.headerContainer}>
           <Text style={styles.headerText}>Add New Chat</Text>
         </View>
         <View style={styles.icon}>
@@ -90,11 +90,7 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 20,
   },
-  headerContainer: {
-    padding: 10,
-    alignItems: "center",
-    justifyContent: "center",
-  },
+
   icon: {
     alignItems: "flex-start",
     marginRight: 16,

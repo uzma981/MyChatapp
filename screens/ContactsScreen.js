@@ -114,10 +114,10 @@ const ContactsScreen = (props) => {
   return (
     <View style={styles.container}>
       <ScrollView>
-        <View style={styles.headerContainer}>
-          <Text style={styles.headerText}>Contacts</Text>
+        <View style={globalStyle.headerContainer}>
+          <Text style={globalStyle.headerText}>Contacts</Text>
         </View>
-        <View style={styles.icon}>
+        <View style={globalStyle.icon}>
           <TouchableOpacity onPress={() => navigation.navigate("Add Contact")}>
             <AntDesign name="adduser" size={20} color="black"></AntDesign>
           </TouchableOpacity>
@@ -125,9 +125,9 @@ const ContactsScreen = (props) => {
         {loaded && (
           <>
             {contacts.map((contact) => (
-              <View key={contact.user_id} style={styles.contactcontainer}>
-                <View style={styles.content}>
-                  <View style={styles.row}>
+              <View key={contact.user_id} style={globalStyle.singlecontainer}>
+                <View style={globalStyle.singlecontainerContent}>
+                  <View style={globalStyle.singlecontainerRow}>
                     <Text style={styles.name}>
                       {contact.first_name} {contact.last_name}
                     </Text>
@@ -165,19 +165,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontWeight: "bold",
   },
-  contactcontainer: {
-    flexDirection: "row",
-    marginHorizontal: 10,
-    marginVertical: 5,
-    height: 70,
-    marginTop: 10,
-  },
-  content: {
-    flex: 1,
 
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "lightgray",
-  },
   container: {
     flex: 1,
     backgroundColor: "white",
@@ -190,14 +178,7 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     flexDirection: "row",
   },
-  headerText: {
-    fontSize: 20,
-  },
-  headerContainer: {
-    padding: 10,
-    alignItems: "center",
-    justifyContent: "center",
-  },
+
   image: {
     width: 60,
     height: 60,
@@ -210,20 +191,12 @@ const styles = StyleSheet.create({
     marginTop: 5,
     marginRight: 10,
   },
-  icon: {
-    alignItems: "flex-end",
-    marginRight: 8,
-    marginBottom: 10,
-  },
+
   searchInput: {
     width: "100%",
     height: "100%",
     paddingLeft: 8,
     fontSize: 16,
-  },
-  row: {
-    flexDirection: "row",
-    marginBottom: 5,
   },
 });
 

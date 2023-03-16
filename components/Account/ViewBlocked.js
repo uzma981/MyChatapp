@@ -14,6 +14,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import axios from "axios";
 import { useState, useEffect } from "react";
+import globalStyle from "../global-style";
 
 export default function ViewBlocked(props) {
   const [contacts, setContacts] = useState([]);
@@ -66,16 +67,16 @@ export default function ViewBlocked(props) {
       });
   };
   return (
-    <View style={styles.container}>
+    <View style={globalStyle.appcontainer}>
       <ScrollView>
-        <View style={styles.headerContainer}>
-          <Text style={styles.headerText}>Blocked</Text>
+        <View style={globalStyle.headerContainer}>
+          <Text style={globalStyle.headerText}>Blocked</Text>
         </View>
         <>
           {contacts.map((contact) => (
-            <View key={contact.user_id} style={styles.contactcontainer}>
-              <View style={styles.content}>
-                <View style={styles.row}>
+            <View key={contact.user_id} style={globalStyle.singlecontainer}>
+              <View style={globalStyle.singlecontainerContent}>
+                <View style={globalStyle.singlecontainerRow}>
                   <Text style={styles.name}>
                     {contact.first_name} {contact.last_name}
                   </Text>
@@ -105,23 +106,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontWeight: "bold",
   },
-  contactcontainer: {
-    flexDirection: "row",
-    marginHorizontal: 10,
-    marginVertical: 5,
-    height: 70,
-    marginTop: 10,
-  },
-  content: {
-    flex: 1,
 
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "lightgray",
-  },
-  container: {
-    flex: 1,
-    backgroundColor: "white",
-  },
   searchcontainer: {
     width: "100%",
     height: 50,
@@ -130,14 +115,7 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     flexDirection: "row",
   },
-  headerText: {
-    fontSize: 20,
-  },
-  headerContainer: {
-    padding: 10,
-    alignItems: "center",
-    justifyContent: "center",
-  },
+
   image: {
     width: 60,
     height: 60,
@@ -160,9 +138,5 @@ const styles = StyleSheet.create({
     height: "100%",
     paddingLeft: 8,
     fontSize: 16,
-  },
-  row: {
-    flexDirection: "row",
-    marginBottom: 5,
   },
 });

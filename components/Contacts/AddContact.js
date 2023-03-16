@@ -81,8 +81,8 @@ const AddContact = (props) => {
   return (
     <View style={styles.container}>
       <ScrollView>
-        <View style={styles.headerContainer}>
-          <Text style={styles.headerText}>Add Contact</Text>
+        <View style={globalStyle.headerContainer}>
+          <Text style={globalStyle.headerText}>Add Contact</Text>
         </View>
         <View style={styles.icon}>
           <TouchableOpacity onPress={() => navigation.navigate("Contact")}>
@@ -175,14 +175,7 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     flexDirection: "row",
   },
-  headerText: {
-    fontSize: 20,
-  },
-  headerContainer: {
-    padding: 10,
-    alignItems: "center",
-    justifyContent: "center",
-  },
+
   image: {
     width: 60,
     height: 60,
