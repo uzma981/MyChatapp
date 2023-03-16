@@ -1,21 +1,20 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Text,
   View,
   StyleSheet,
   Image,
-  Button,
+  TouchableOpacity,
   FlatList,
   ScrollView,
-  TouchableOpacity,
 } from "react-native";
-
-import ChatItem from "../components/Chats/ChatItem";
 import { Entypo } from "@expo/vector-icons";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useState, useEffect } from "react";
+
+import ChatItem from "../components/Chats/ChatItem";
 import globalStyle from "../components/global-style";
+
 const ChatsScreen = (props) => {
   const { navigation } = props;
   const [chats, setChats] = useState([]);
@@ -44,6 +43,37 @@ const ChatsScreen = (props) => {
     });
     return unsubscribe;
   }, []);
+
+  const renderItem = ({ item }) => (
+    <TouchableOpacity
+      onPress={() =>
+        navigation.navigate("Single Chat", { chatId: item.chat_id })
+      }
+      style={globalStyle.singlecontainer}
+    >
+      <Image
+        source={{
+          uri: "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/avatars/lukas.jpeg",
+        }}
+        style={styles.image}
+      />
+      <View style={globalStyle.singlecontainerContent}>
+        <View style={globalStyle.singlecontainerRow}>
+          <Text style={styles.name}>{item.name}</Text>
+          <Text style={styles.subTitle}>
+            Time:
+            {/* {chat.last_message.timestamp} */}
+          </Text>
+        </View>
+        <Text numberOfLines={2} style={styles.subTitle}>
+          {/* {chat.last_message.author.first_name}  */}
+          Name:Last message
+          {/* {chat.last_message.message} */}
+        </Text>
+      </View>
+    </TouchableOpacity>
+  );
+
   return (
     <View style={globalStyle.appcontainer}>
       <ScrollView>
@@ -55,57 +85,16 @@ const ChatsScreen = (props) => {
             <Entypo name="new-message" size={24} color="black" />
           </TouchableOpacity>
         </View>
-        <>
-          {chats.map((chat) => (
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate("Single Chat", { chatId: chat.chat_id })
-              }
-              key={chat.chat_id}
-              style={globalStyle.singlecontainer}
-            >
-              <Image
-                source={{
-                  uri: "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/avatars/lukas.jpeg",
-                }}
-                style={styles.image}
-              />
-              <View style={globalStyle.singlecontainerContent}>
-                <View style={globalStyle.singlecontainerRow}>
-                  <Text style={styles.name}>{chat.name}</Text>
-                  <Text style={styles.subTitle}>
-                    Time:
-                    {/* {chat.last_message.timestamp} */}
-                  </Text>
-                </View>
-                <Text numberOfLines={2} style={styles.subTitle}>
-                  {/* {chat.last_message.author.first_name}  */}
-                  Name:Last message
-                  {/* {chat.last_message.message} */}
-                </Text>
-              </View>
-            </TouchableOpacity>
-          ))}
-        </>
+        <FlatList
+          data={chats}
+          renderItem={({ item }) => (
+            <ChatItem chat={item} navigation={navigation} />
+          )}
+          keyExtractor={(item) => item.chat_id}
+        />
       </ScrollView>
     </View>
   );
 };
-const styles = StyleSheet.create({
-  name: {
-    flex: 1,
-    fontWeight: "bold",
-  },
-  image: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    marginRight: 10,
-  },
-
-  subTitle: {
-    color: "gray",
-  },
-});
 
 export default ChatsScreen;

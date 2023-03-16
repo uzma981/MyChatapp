@@ -5,6 +5,7 @@ import ChatsScreen from "../screens/ChatsScreen";
 import NewChat from "../components/Chats/NewChat";
 import SingleChat from "../components/Chats/SingleChat";
 import AddUsertoChat from "../components/Chats/AddUsertoChat";
+import ChatItem from "../components/Chats/ChatItem";
 export default function ChatsNavigation() {
   const Stack = createNativeStackNavigator();
 
@@ -24,6 +25,11 @@ export default function ChatsNavigation() {
       <Stack.Screen
         name="Add User"
         component={AddUsertoChat}
+        options={{ headerShown: false }}
+      ></Stack.Screen>
+      <Stack.Screen
+        name="Chat Item"
+        component={ChatItem}
         options={{ headerShown: false }}
       ></Stack.Screen>
     </Stack.Navigator>
