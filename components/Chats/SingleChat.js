@@ -13,6 +13,7 @@ import { useState, useEffect } from "react";
 import { useRoute } from "@react-navigation/native";
 
 import { Ionicons } from "@expo/vector-icons";
+import globalStyle from "../global-style";
 
 export default function SingleChat(props) {
   const [chats, setChats] = useState([]);
@@ -45,7 +46,7 @@ export default function SingleChat(props) {
     });
     return unsubscribe;
   }, []);
-  const InputBox = () => {
+  const MessageBox = () => {
     return (
       <View style={styles.container}>
         <View style={styles.mainContainer}>
@@ -64,15 +65,17 @@ export default function SingleChat(props) {
   };
   const { navigation } = props;
   return (
-    <View style={styles.main}>
-      <View style={styles.icon}>
+    <View style={globalStyle.appcontainer}>
+      <View style={globalStyle.headerContainer}>
+        <Text style={globalStyle.headerText}> {chats.name}</Text>
+      </View>
+      <View style={globalStyle.icon}>
         <TouchableOpacity onPress={() => navigation.navigate("Add User")}>
           <AntDesign name="adduser" size={24} color="black" />
         </TouchableOpacity>
       </View>
-      <Text>Name: {chats.name}</Text>
 
-      <InputBox />
+      <MessageBox />
       {/* <Text>Message: {message}</Text> */}
     </View>
   );
@@ -91,11 +94,7 @@ const styles = StyleSheet.create({
   textInput: {
     flex: 1,
   },
-  icon: {
-    alignItems: "flex-end",
-    marginRight: 16,
-    marginBottom: 10,
-  },
+
   mainContainer: {
     flexDirection: "row",
     backgroundColor: "#EFEBEB",
