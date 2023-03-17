@@ -14,6 +14,7 @@ import { useRoute } from "@react-navigation/native";
 
 import { Ionicons } from "@expo/vector-icons";
 import globalStyle from "../global-style";
+import { FlatList } from "react-native-web";
 
 export default function SingleChat(props) {
   const [chats, setChats] = useState([]);
@@ -30,9 +31,33 @@ export default function SingleChat(props) {
         },
       })
       .then(function (response) {
-        console.log(response);
         console.log(response.data);
         setChats(response.data);
+      })
+      .catch(function (error) {
+        console.log(error.response);
+      });
+  };
+
+  const sendMessage = async () => {
+    const token = await AsyncStorage.getItem("token");
+
+    await axios
+      .post(
+        `http://localhost:3333/api/1.0.0/chat/${chatId}/message`,
+        {
+          message: message,
+        },
+        {
+          headers: {
+            "X-Authorization": token,
+          },
+        }
+      )
+      .then(function (response) {
+        console.log(response);
+        // setMessage(""); // clear the message box
+        viewSingleChat(chatId); // refresh the chat messages
       })
       .catch(function (error) {
         console.log(error.response);
@@ -45,15 +70,17 @@ export default function SingleChat(props) {
     });
     return unsubscribe;
   }, []);
+
   const MessageBox = () => {
     return (
       <View style={styles.container}>
         <View style={styles.mainContainer}>
           <TextInput
+            value={message}
             onChangeText={(text) => setMessage(text)}
             style={styles.textInput}
-          ></TextInput>
-          <TouchableOpacity>
+          />
+          <TouchableOpacity onPress={sendMessage}>
             <View style={styles.btnContainer}>
               <Ionicons name="send" size={20} color="white" />
             </View>
@@ -62,6 +89,7 @@ export default function SingleChat(props) {
       </View>
     );
   };
+
   const { navigation } = props;
   return (
     <View style={globalStyle.appcontainer}>
@@ -75,8 +103,19 @@ export default function SingleChat(props) {
           <AntDesign name="adduser" size={24} color="black" />
         </TouchableOpacity>
       </View>
+      {/* <FlatList
+        data={chats}
+        keyExtractor={(item) => item.messages.message_id}
+        renderItem={({ item }) => (
+          <View>
+            <Text style={globalStyle.headerText}>{item.messages.message}</Text>
+          </View>
+        )}
+      ></FlatList> */}
 
       <MessageBox />
+      {/* <Text>{message}</Text> */}
+      {/* <Text>{chats.messages.message}</Text> */}
       {/* <Text>Message: {message}</Text> */}
     </View>
   );
