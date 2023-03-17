@@ -20,14 +20,11 @@ export default function ChatItem({ chat, navigation }) {
       <View style={globalStyle.singlecontainerContent}>
         <View style={globalStyle.singlecontainerRow}>
           <Text style={styles.name}>{chat.name}</Text>
-          <Text style={styles.subTitle}>
-            Time:
-            {/* {chat.last_message.timestamp} */}
-          </Text>
+          <Text style={styles.subTitle}>{chat.last_message.timestamp}</Text>
         </View>
         <Text numberOfLines={2} style={styles.subTitle}>
           {/* {chat.last_message.author.first_name}  */}
-          Name:Last message
+          {chat.last_message.author.first_name} : {chat.last_message.message}
           {/* {chat.last_message.message} */}
         </Text>
       </View>
