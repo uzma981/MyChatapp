@@ -18,8 +18,7 @@ import globalStyle from "../global-style";
 export default function SingleChat(props) {
   const [chats, setChats] = useState([]);
   const [message, setMessage] = useState("");
-  const route = useRoute();
-  const { chatId } = route.params;
+  const chatId = props.route.params.chatId; // get chatId from route params
 
   const viewSingleChat = async (chat_id) => {
     const token = await AsyncStorage.getItem("token");
@@ -71,7 +70,7 @@ export default function SingleChat(props) {
       </View>
       <View style={globalStyle.icon}>
         <TouchableOpacity
-          onPress={() => navigation.navigate("Add User", { chat_id: chatId })}
+          onPress={() => navigation.navigate("Add User", { chatId: chatId })}
         >
           <AntDesign name="adduser" size={24} color="black" />
         </TouchableOpacity>

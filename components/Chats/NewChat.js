@@ -37,7 +37,7 @@ export default function NewChat(props) {
 
       .then(function (response) {
         if (response.status == 201) {
-          navigation.navigate("Single Chat");
+          navigation.navigate("Chat");
         }
         console.log(response);
       })
