@@ -119,7 +119,7 @@ const ContactsScreen = (props) => {
         </View>
         <View style={globalStyle.icon}>
           <TouchableOpacity onPress={() => navigation.navigate("Add Contact")}>
-            <AntDesign name="adduser" size={20} color="black"></AntDesign>
+            <AntDesign name="adduser" size={24} color="black"></AntDesign>
           </TouchableOpacity>
         </View>
         {loaded && (

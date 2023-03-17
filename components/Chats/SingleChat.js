@@ -70,7 +70,9 @@ export default function SingleChat(props) {
         <Text style={globalStyle.headerText}> {chats.name}</Text>
       </View>
       <View style={globalStyle.icon}>
-        <TouchableOpacity onPress={() => navigation.navigate("Add User")}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("Add User", { chat_id: chatId })}
+        >
           <AntDesign name="adduser" size={24} color="black" />
         </TouchableOpacity>
       </View>

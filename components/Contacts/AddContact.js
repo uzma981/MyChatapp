@@ -8,8 +8,7 @@ import {
   Image,
 } from "react-native";
 import React from "react";
-import { Formik } from "formik";
-import * as Yup from "yup";
+
 import globalStyle from "../global-style";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -17,7 +16,8 @@ import { AntDesign } from "@expo/vector-icons";
 import { useState } from "react";
 
 import { Ionicons } from "@expo/vector-icons";
-
+import { FlatList } from "react-native-web";
+import SearchUserItem from "../Shared/SearchUserItem";
 const AddContact = (props) => {
   const [searchUser, setSearchUser] = useState(null);
   const [searchText, setSearchText] = useState("");
@@ -80,67 +80,21 @@ const AddContact = (props) => {
 
   return (
     <View style={styles.container}>
-      <ScrollView>
-        <View style={globalStyle.headerContainer}>
-          <Text style={globalStyle.headerText}>Add Contact</Text>
-        </View>
-        <View style={styles.icon}>
-          <TouchableOpacity onPress={() => navigation.navigate("Contact")}>
-            <Ionicons name="arrow-back" size={20} color="black"></Ionicons>
-          </TouchableOpacity>
-        </View>
+      <View style={globalStyle.headerContainer}>
+        <Text style={globalStyle.headerText}>Add Contact</Text>
+      </View>
+      <View style={styles.icon}>
+        <TouchableOpacity onPress={() => navigation.navigate("Contact")}>
+          <Ionicons name="arrow-back" size={20} color="black"></Ionicons>
+        </TouchableOpacity>
+      </View>
 
-        <SearchBar />
-
-        {
-          <>
-            {searchUser ? (
-              searchUser.map((user) => (
-                <View key={user.user_id}>
-                  <View>
-                    <TouchableOpacity>
-                      <View style={styles.contactcontainer}>
-                        <Image
-                          source={{
-                            uri: "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/avatars/lukas.jpeg",
-                          }}
-                          style={styles.image}
-                        />
-                        {/* {getUserProfilePhoto(user.user_id)} */}
-                        {image && (
-                          <Image
-                            source={{ uri: image }}
-                            style={styles.image}
-                            resizeMode="cover"
-                          ></Image>
-                        )}
-                        <View style={styles.content}>
-                          <View style={styles.row}>
-                            <Text numberOfLines={1} style={styles.name}>
-                              {user.given_name} {user.family_name}
-                            </Text>
-                          </View>
-                          <Text>Email: {user.email}</Text>
-                        </View>
-                        <View style={styles.icon}>
-                          <TouchableOpacity
-                            onPress={() => handleAddContact(user.user_id)}
-                          >
-                            <AntDesign name="adduser" size={24} color="black" />
-                          </TouchableOpacity>
-                        </View>
-                        <View style={styles.icon}></View>
-                      </View>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              ))
-            ) : (
-              <Text>No results found.</Text>
-            )}
-          </>
-        }
-      </ScrollView>
+      <SearchBar />
+      <FlatList
+        data={searchUser}
+        renderItem={({ item }) => <SearchUserItem user={item} />}
+        keyExtractor={(item) => item.user_id}
+      />
     </View>
   );
 };
