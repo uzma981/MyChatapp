@@ -101,8 +101,8 @@ export default function AddUsertoChatScreen(props) {
       })
       .then(function (response) {
         console.log(response);
-        setuserinChat(response.data.members);
-        console.log(response.data.members);
+        const members = response.data.members;
+        setuserinChat(members);
       })
       .catch(function (error) {
         console.log(error.response);
