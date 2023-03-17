@@ -6,6 +6,7 @@ import {
   StyleSheet,
   ScrollView,
   Image,
+  FlatList,
 } from "react-native";
 import React from "react";
 
@@ -16,7 +17,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { useState } from "react";
 
 import { Ionicons } from "@expo/vector-icons";
-import { FlatList } from "react-native-web";
+
 import SearchUserItem from "../Shared/SearchUserItem";
 const AddContact = (props) => {
   const [searchUser, setSearchUser] = useState(null);
@@ -39,22 +40,6 @@ const AddContact = (props) => {
     } catch (error) {
       console.log(error);
     }
-  };
-  const handleAddContact = async (user_id) => {
-    const token = await AsyncStorage.getItem("token");
-
-    await axios
-      .post(`http://localhost:3333/api/1.0.0/user/${user_id}/contact`, null, {
-        headers: {
-          "X-Authorization": token,
-        },
-      })
-      .then(function (response) {
-        console.log(response);
-      })
-      .catch(function (error) {
-        console.log(error.response);
-      });
   };
 
   const SearchBar = () => {
