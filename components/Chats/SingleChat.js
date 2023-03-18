@@ -78,6 +78,7 @@ export default function SingleChat(props) {
             value={message}
             onChangeText={(text) => setMessage(text)}
             style={styles.textInput}
+            autoFocus={true}
           />
           <TouchableOpacity onPress={sendMessage}>
             <View style={styles.btnContainer}>
@@ -138,12 +139,12 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   textInput: {
-    flex: 1,
+    width: "80%",
   },
 
   messageContainer: {
     alignSelf: "flex-start",
-    backgroundColor: "#DCF8C5",
+    backgroundColor: "#BFE6FF",
     borderRadius: 20,
     paddingHorizontal: 15,
     paddingVertical: 10,
@@ -153,7 +154,7 @@ const styles = StyleSheet.create({
 
   messageContainerSent: {
     alignSelf: "flex-end",
-    backgroundColor: "#BFE6FF",
+    backgroundColor: "#DCF8C5",
     borderRadius: 20,
     paddingHorizontal: 15,
     paddingVertical: 10,
