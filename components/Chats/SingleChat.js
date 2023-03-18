@@ -4,17 +4,16 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
+  FlatList,
 } from "react-native";
 import React from "react";
 import { AntDesign } from "@expo/vector-icons";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useState, useEffect } from "react";
-import { useRoute } from "@react-navigation/native";
 
 import { Ionicons } from "@expo/vector-icons";
 import globalStyle from "../global-style";
-import { FlatList } from "react-native-web";
 
 export default function SingleChat(props) {
   const [chats, setChats] = useState([]);
@@ -31,7 +30,7 @@ export default function SingleChat(props) {
         },
       })
       .then(function (response) {
-        console.log(response.data);
+        console.log(response.data.messages);
         setChats(response.data);
       })
       .catch(function (error) {
@@ -56,7 +55,7 @@ export default function SingleChat(props) {
       )
       .then(function (response) {
         console.log(response);
-        // setMessage(""); // clear the message box
+        setMessage(""); // clear the message box
         viewSingleChat(chatId); // refresh the chat messages
       })
       .catch(function (error) {
@@ -103,15 +102,22 @@ export default function SingleChat(props) {
           <AntDesign name="adduser" size={24} color="black" />
         </TouchableOpacity>
       </View>
-      {/* <FlatList
-        data={chats}
-        keyExtractor={(item) => item.messages.message_id}
+
+      <FlatList
+        data={chats.messages}
+        keyExtractor={(item) => item.message_id}
         renderItem={({ item }) => (
-          <View>
-            <Text style={globalStyle.headerText}>{item.messages.message}</Text>
+          <View
+            style={[
+              styles.messageContainer,
+              item.author.user_id != chats.creator.user_id &&
+                styles.messageContainerSent,
+            ]}
+          >
+            <Text style={styles.messageText}>{item.message}</Text>
           </View>
         )}
-      ></FlatList> */}
+      ></FlatList>
 
       <MessageBox />
       {/* <Text>{message}</Text> */}
@@ -133,6 +139,31 @@ const styles = StyleSheet.create({
   },
   textInput: {
     flex: 1,
+  },
+
+  messageContainer: {
+    alignSelf: "flex-start",
+    backgroundColor: "#DCF8C5",
+    borderRadius: 20,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    marginVertical: 5,
+    maxWidth: "70%",
+  },
+
+  messageContainerSent: {
+    alignSelf: "flex-end",
+    backgroundColor: "#BFE6FF",
+    borderRadius: 20,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    marginVertical: 5,
+    maxWidth: "70%",
+  },
+
+  messageText: {
+    fontSize: 16,
+    lineHeight: 22,
   },
 
   mainContainer: {

@@ -28,7 +28,7 @@ const ChatsScreen = (props) => {
         },
       })
       .then(function (response) {
-        console.log(response);
+        console.log(response.data);
         setChats(response.data);
       })
       .catch(function (error) {
@@ -55,11 +55,20 @@ const ChatsScreen = (props) => {
       </View>
       <FlatList
         data={chats}
+        keyExtractor={(item) => item.chat_id}
+        renderItem={({ item }) => (
+          <View>
+            <ChatItem chat={item} navigation={navigation} />
+          </View>
+        )}
+      ></FlatList>
+      {/* <FlatList
+        data={chats}
         renderItem={({ item }) => (
           <ChatItem chat={item} navigation={navigation} />
         )}
         keyExtractor={(item) => item.chat_id}
-      />
+      /> */}
     </View>
   );
 };

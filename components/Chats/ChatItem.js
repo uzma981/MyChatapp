@@ -23,9 +23,8 @@ export default function ChatItem({ chat, navigation }) {
           <Text style={styles.subTitle}>{chat.last_message.timestamp}</Text>
         </View>
         <Text numberOfLines={2} style={styles.subTitle}>
-          {/* {chat.last_message.author.first_name}  */}
-          {chat.last_message.author.first_name} : {chat.last_message.message}
-          {/* {chat.last_message.message} */}
+          {chat.last_message.message}
+          {/* {chat.last_message.author.last_name} */}
         </Text>
       </View>
     </TouchableOpacity>
