@@ -61,4 +61,17 @@ export default StyleSheet.create({
     flexDirection: "row",
     marginBottom: 5,
   },
+  btnDisabled: {
+    backgroundColor: "gray",
+    opacity: 0.5,
+    height: 40,
+    width: "80%",
+    marginBottom: 5,
+    marginTop: 20,
+    borderRadius: 40,
+  },
+  signupText: {
+    textAlign: "center",
+    color: "black",
+  },
 });

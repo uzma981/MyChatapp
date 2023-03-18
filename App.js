@@ -1,5 +1,5 @@
-import Login from "./components/Login";
-import SignUp from "./components/SignUp";
+import Login from "./navigation/Login";
+import SignUp from "./navigation/SignUp";
 
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
@@ -16,7 +16,11 @@ export default function App() {
           component={Login}
           options={{ headerShown: false }}
         ></Stack.Screen>
-        <Stack.Screen name="SignUp" component={SignUp}></Stack.Screen>
+        <Stack.Screen
+          name="SignUp"
+          component={SignUp}
+          options={{ headerShown: false }}
+        ></Stack.Screen>
         <Stack.Screen
           name="Home"
           component={Home}

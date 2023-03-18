@@ -1,4 +1,3 @@
-import React, { useState, useEffect } from "react";
 import {
   Text,
   TextInput,
@@ -6,53 +5,11 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
+import globalStyle from "../global-style";
+
 import { Formik } from "formik";
-import * as Yup from "yup";
-import globalStyle from "./global-style";
-import axios from "axios";
-
-const SignUpSchema = Yup.object().shape({
-  firstName: Yup.string()
-    .min(3, "First name must be at least 3 characters")
-    .required("Please enter first name"),
-  lastName: Yup.string()
-    .min(3, "Last name must be at least 3 characters")
-    .required("Please enter last name"),
-  email: Yup.string()
-    .email("Invalid email")
-    .required("Please enter an email address"),
-  password: Yup.string()
-    .min(8, "Password must be at least 8 characters")
-    .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])/,
-      "Password must contain at least one uppercase letter, one lowercase letter, one number and one special character"
-    )
-    .required("Please enter a password"),
-  confirmPassword: Yup.string()
-    .oneOf([Yup.ref("password"), null], "Passwords must match")
-    .required("Please confirm your password"),
-});
-
-export default function SignUp(props) {
-  const { navigation } = props;
-  const handleLogin = (values) => {
-    axios
-      .post("http://localhost:3333/api/1.0.0/user", {
-        first_name: values.firstName,
-        last_name: values.lastName,
-        email: values.email,
-        password: values.password,
-      })
-
-      .then(function (response) {
-        console.log(response);
-        navigation.navigate("Login");
-      })
-      .catch(function (error) {
-        console.log(error.response);
-      });
-  };
-
+import { SignUpSchema } from "./Validation/validationschema";
+export default function SignUpForm({ handleSignup, navigation }) {
   return (
     <Formik
       initialValues={{
@@ -63,7 +20,7 @@ export default function SignUp(props) {
         confirmPassword: "",
       }}
       validationSchema={SignUpSchema}
-      onSubmit={handleLogin}
+      onSubmit={handleSignup}
     >
       {({
         handleChange,
@@ -136,7 +93,7 @@ export default function SignUp(props) {
             style={[
               globalStyle.btn,
               (errors.password || errors.confirmPassword || errors.email) &&
-                styles.btnDisabled,
+                globalStyle.btnDisabled,
             ]}
             disabled={errors.email && errors.password && errors.confirmPassword}
           >
@@ -150,7 +107,7 @@ export default function SignUp(props) {
             style={{ marginBottom: 10 }}
           >
             <View style={{ padding: 10 }}>
-              <Text style={styles.signupText}>Have an account? Login</Text>
+              <Text style={globalStyle.signupText}>Have an account? Login</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -158,15 +115,4 @@ export default function SignUp(props) {
     </Formik>
   );
 }
-
-const styles = StyleSheet.create({
-  btnDisabled: {
-    backgroundColor: "gray",
-    opacity: 0.5,
-    height: 40,
-    width: "80%",
-    marginBottom: 5,
-    marginTop: 20,
-    borderRadius: 40,
-  },
-});
+const styles = StyleSheet.create({});
