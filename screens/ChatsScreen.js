@@ -62,13 +62,6 @@ const ChatsScreen = (props) => {
           </View>
         )}
       ></FlatList>
-      {/* <FlatList
-        data={chats}
-        renderItem={({ item }) => (
-          <ChatItem chat={item} navigation={navigation} />
-        )}
-        keyExtractor={(item) => item.chat_id}
-      /> */}
     </View>
   );
 };
