@@ -33,11 +33,18 @@ export default function Logout() {
       });
   };
   return (
-    <View>
-      <TouchableOpacity onPress={handleLogout}>
+    <TouchableOpacity onPress={handleLogout}>
+      <View
+        style={{
+          marginTop: 5,
+          marginBottom: 5,
+          backgroundColor: "#cecece",
+          padding: 10,
+        }}
+      >
         <Text>Logout</Text>
-      </TouchableOpacity>
-    </View>
+      </View>
+    </TouchableOpacity>
   );
 }
 

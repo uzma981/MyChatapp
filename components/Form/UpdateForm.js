@@ -67,10 +67,14 @@ export default function UpdateForm({ handleUpdate, navigation }) {
               <Text style={globalStyle.btnText}>Update</Text>
             </View>
           </TouchableOpacity>
-          <Logout></Logout>
-          <TouchableOpacity onPress={() => navigation.navigate("View Blocked")}>
+
+          <TouchableOpacity
+            style={{ padding: 5 }}
+            onPress={() => navigation.navigate("View Blocked")}
+          >
             <Text>View Blocked</Text>
           </TouchableOpacity>
+          <Logout></Logout>
         </View>
       )}
     </Formik>

@@ -25,6 +25,10 @@ export default function LoginForm({ handleLogin, navigation, displayMessage }) {
         touched,
       }) => (
         <View style={globalStyle.welcomecontainer}>
+          <Text style={{ fontSize: 24, fontWeight: "bold" }}>
+            WhatsThat<Text style={{ color: "#fb5b5a" }}> App</Text>
+          </Text>
+          <Text style={{ fontSize: 20, fontWeight: "bold" }}>Login</Text>
           <TextInput
             style={globalStyle.inputBox}
             placeholder="Email"
