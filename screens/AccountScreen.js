@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   SafeAreaView,
@@ -6,6 +6,7 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
+import * as ImagePicker from "expo-image-picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
@@ -16,7 +17,7 @@ const AccountScreen = (props) => {
 
   const { navigation } = props;
 
-  const upload = async () => {
+  const getProfilePhoto = async () => {
     const id = await AsyncStorage.getItem("id");
     const token = await AsyncStorage.getItem("token");
 
@@ -39,22 +40,44 @@ const AccountScreen = (props) => {
       });
   };
   //add a useeffect for the image
+  useEffect(() => {
+    getProfilePhoto();
+  }, []);
 
-  // const uploadImage = async () => {
-  //   const result = await ImagePicker.launchImageLibraryAsync({
-  //     mediaTypes: ImagePicker.MediaTypeOptions.Images,
-  //     allowsEditing: true,
-  //     aspect: [4, 3],
-  //     quality: 1,
-  //     base64: false,
-  //     exif: true,
-  //onPictureSaved: (data) => sendToServer(data),
-  //   });
+  const uploadProfilePhoto = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+      base64: false,
+      exif: true,
+    });
 
-  //   if (!result.cancelled) {
-  //     setImage(result.uri);
-  //   }
-  // };
+    if (!result.cancelled) {
+      setImage(result.uri);
+      sendToServer(result);
+    }
+  };
+  async function sendToServer(data) {
+    console.log("HERE", data.uri);
+
+    const id = await AsyncStorage.getItem("id");
+    const token = await AsyncStorage.getItem("token");
+    let res = await fetch(data.uri);
+    let blob = await res.blob();
+
+    await axios.post(
+      "http://localhost:3333/api/1.0.0/user/" + id + "/photo",
+      blob,
+      {
+        headers: {
+          "X-Authorization": token,
+          "Content-Type": "image/png",
+        },
+      }
+    );
+  }
 
   const handleUpdate = async (values) => {
     const token = await AsyncStorage.getItem("token");
@@ -99,7 +122,7 @@ const AccountScreen = (props) => {
           )}
         </View>
 
-        <TouchableOpacity onPress={() => upload()}>
+        <TouchableOpacity onPress={() => uploadProfilePhoto()}>
           <View style={styles.add}>
             <Ionicons
               name="add-outline"
@@ -114,6 +137,16 @@ const AccountScreen = (props) => {
         handleUpdate={handleUpdate}
         navigation={navigation}
       ></UpdateForm>
+      {/* <TouchableOpacity onPress={() => upload()}>
+        <View style={styles.add}>
+          <Ionicons
+            name="add-outline"
+            size={48}
+            color="gray"
+            style={{ marginTop: 6, marginLeft: 2 }}
+          ></Ionicons>
+        </View>
+      </TouchableOpacity> */}
     </View>
   );
 };
