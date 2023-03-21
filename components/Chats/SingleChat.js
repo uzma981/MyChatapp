@@ -18,6 +18,7 @@ import globalStyle from "../global-style";
 export default function SingleChat(props) {
   const [chats, setChats] = useState([]);
   const [message, setMessage] = useState("");
+
   const chatId = props.route.params.chatId; // get chatId from route params
 
   const viewSingleChat = async (chat_id) => {
@@ -98,9 +99,9 @@ export default function SingleChat(props) {
       </View>
       <View style={globalStyle.icon}>
         <TouchableOpacity
-          onPress={() => navigation.navigate("Add User", { chatId: chatId })}
+          onPress={() => navigation.navigate("Settings", { chatId: chatId })}
         >
-          <AntDesign name="adduser" size={24} color="black" />
+          <AntDesign name="setting" size={24} color="black" />
         </TouchableOpacity>
       </View>
 
@@ -111,19 +112,18 @@ export default function SingleChat(props) {
           <View
             style={[
               styles.messageContainer,
-              item.author.user_id != chats.creator.user_id &&
+              item.author.user_id == chats.creator.user_id &&
                 styles.messageContainerSent,
             ]}
           >
-            <Text style={styles.messageText}>{item.message}</Text>
+            <Text style={styles.messageText}>
+              {item.author.first_name}: {item.message}
+            </Text>
           </View>
         )}
       ></FlatList>
 
       <MessageBox />
-      {/* <Text>{message}</Text> */}
-      {/* <Text>{chats.messages.message}</Text> */}
-      {/* <Text>Message: {message}</Text> */}
     </View>
   );
 }
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
 
   messageContainer: {
     alignSelf: "flex-start",
-    backgroundColor: "#BFE6FF",
+    backgroundColor: "#cecece",
     borderRadius: 20,
     paddingHorizontal: 15,
     paddingVertical: 10,
@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
 
   messageContainerSent: {
     alignSelf: "flex-end",
-    backgroundColor: "#DCF8C5",
+    backgroundColor: "#fdaca5",
     borderRadius: 20,
     paddingHorizontal: 15,
     paddingVertical: 10,
