@@ -87,7 +87,7 @@ const AccountScreen = (props) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <View style={{ alignSelf: "center" }}>
         <View style={styles.profileImage}>
           {image && (
@@ -114,7 +114,7 @@ const AccountScreen = (props) => {
         handleUpdate={handleUpdate}
         navigation={navigation}
       ></UpdateForm>
-    </SafeAreaView>
+    </View>
   );
 };
 const styles = StyleSheet.create({
