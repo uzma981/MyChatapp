@@ -20,11 +20,6 @@ export default function SingleChat(props) {
   const [userId, setUserId] = useState(null);
 
   const [message, setMessage] = useState("");
-  const loggedinUserID = async () => {
-    const id = await AsyncStorage.getItem("id");
-    console.log(id);
-    return id;
-  };
 
   const chatId = props.route.params.chatId; // get chatId from route params
 
@@ -40,6 +35,50 @@ export default function SingleChat(props) {
       .then(function (response) {
         console.log(response.data.messages);
         setChats(response.data);
+      })
+      .catch(function (error) {
+        console.log(error.response);
+      });
+  };
+  const updateMessage = async (message_id) => {
+    const token = await AsyncStorage.getItem("token");
+
+    await axios
+      .patch(
+        `http://localhost:3333/api/1.0.0/chat/${chatId}/message/${message_id}`,
+        {
+          message: message,
+        },
+        {
+          headers: {
+            "X-Authorization": token,
+          },
+        }
+      )
+      .then(function (response) {
+        console.log(response);
+        viewSingleChat(chatId); // refresh the chat messages
+      })
+      .catch(function (error) {
+        console.log(error.response);
+      });
+  };
+  const deleteMessage = async (chatId, message_id) => {
+    const token = await AsyncStorage.getItem("token");
+
+    await axios
+      .delete(
+        `http://localhost:3333/api/1.0.0/chat/${chatId}/message/${message_id}`,
+
+        {
+          headers: {
+            "X-Authorization": token,
+          },
+        }
+      )
+      .then(function (response) {
+        console.log(response);
+        viewSingleChat(chatId); // refresh the chat messages
       })
       .catch(function (error) {
         console.log(error.response);
@@ -102,16 +141,20 @@ export default function SingleChat(props) {
   const renderItem = ({ item }) => {
     const sentByUser = item.author.user_id == userId;
     return (
-      <View
-        style={[
-          styles.messageContainer,
-          sentByUser && styles.messageContainerSent, // add messageContainerSent style if sent by logged-in user
-        ]}
+      <TouchableOpacity
+        onLongPress={() => deleteMessage(chatId, item.message_id)}
       >
-        <Text style={styles.messageText}>
-          {item.author.first_name}: {item.message}
-        </Text>
-      </View>
+        <View
+          style={[
+            styles.messageContainer,
+            sentByUser && styles.messageContainerSent,
+          ]}
+        >
+          <Text style={styles.messageText}>
+            {item.author.first_name}: {item.message}
+          </Text>
+        </View>
+      </TouchableOpacity>
     );
   };
   const keyExtractor = (item) => {
@@ -132,12 +175,13 @@ export default function SingleChat(props) {
           <AntDesign name="setting" size={24} color="black" />
         </TouchableOpacity>
       </View>
+
       <FlatList
         data={chats.messages}
         keyExtractor={keyExtractor}
         renderItem={renderItem}
         inverted={true}
-      />
+      ></FlatList>
 
       <MessageBox />
     </View>
