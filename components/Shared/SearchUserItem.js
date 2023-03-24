@@ -1,11 +1,38 @@
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import globalStyle from "../global-style";
 import { AntDesign } from "@expo/vector-icons";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 export default function SearchUserItem({ user }) {
+  const [image, setImage] = useState(null);
+
+  const getProfilePhoto = async (user_id) => {
+    const token = await AsyncStorage.getItem("token");
+    const id = user_id;
+
+    await axios
+      .get("http://localhost:3333/api/1.0.0/user/" + id + "/photo", {
+        headers: {
+          "X-Authorization": token,
+          "Content-Type": "image/png",
+        },
+        responseType: "blob",
+      })
+      .then(function (response) {
+        console.log(response);
+        const url = URL.createObjectURL(response.data);
+        console.log(url);
+        setImage(url);
+      })
+      .catch(function (error) {
+        console.log(error.response);
+      });
+  };
+  useEffect(() => {
+    getProfilePhoto(user.user_id);
+  }, []);
   const handleAddContact = async (user_id) => {
     const token = await AsyncStorage.getItem("token");
 
@@ -26,7 +53,7 @@ export default function SearchUserItem({ user }) {
     <View style={globalStyle.singlecontainer}>
       <Image
         source={{
-          uri: "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/avatars/lukas.jpeg",
+          uri: image,
         }}
         style={styles.image}
       />

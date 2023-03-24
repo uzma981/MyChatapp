@@ -45,7 +45,6 @@ const ContactsScreen = (props) => {
   useEffect(() => {
     const unsubscribe = props.navigation.addListener("focus", () => {
       handleGetContact();
-      //getProfilePhoto(user_id);
     });
     return unsubscribe;
   }, []);
@@ -134,7 +133,6 @@ const ContactsScreen = (props) => {
             data={contacts}
             keyExtractor={(item) => item.user_id}
             renderItem={({ item }) => {
-              //getProfilePhoto(item.user_id);
               return (
                 <View style={globalStyle.singlecontainer}>
                   {image && (
