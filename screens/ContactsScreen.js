@@ -7,6 +7,7 @@ import {
   TextInput,
   Image,
   ScrollView,
+  FlatList,
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 
@@ -20,6 +21,7 @@ import { Ionicons } from "@expo/vector-icons";
 const ContactsScreen = (props) => {
   const [contacts, setContacts] = useState([]);
   const [loaded, setLoaded] = useState(false);
+  const [image, setImage] = useState(null);
   const handleGetContact = async () => {
     const token = await AsyncStorage.getItem("token");
 
@@ -36,12 +38,14 @@ const ContactsScreen = (props) => {
       })
       .catch(function (error) {
         console.log(error.response);
+        setLoaded(true);
       });
   };
 
   useEffect(() => {
     const unsubscribe = props.navigation.addListener("focus", () => {
       handleGetContact();
+      //getProfilePhoto(user_id);
     });
     return unsubscribe;
   }, []);
@@ -67,11 +71,12 @@ const ContactsScreen = (props) => {
         console.log(error.response);
       });
   };
-  const getUserProfilePhoto = async (user_id) => {
+  const getProfilePhoto = async (user_id) => {
     const token = await AsyncStorage.getItem("token");
+    const id = user_id;
 
     await axios
-      .get("http://localhost:3333/api/1.0.0/user/" + user_id + "/photo", {
+      .get("http://localhost:3333/api/1.0.0/user/" + id + "/photo", {
         headers: {
           "X-Authorization": token,
           "Content-Type": "image/png",
@@ -88,7 +93,6 @@ const ContactsScreen = (props) => {
         console.log(error.response);
       });
   };
-
   const blockContact = async (user_id) => {
     const token = await AsyncStorage.getItem("token");
     await axios
@@ -118,42 +122,58 @@ const ContactsScreen = (props) => {
           <Text style={globalStyle.headerText}>Contacts</Text>
         </View>
         <View style={globalStyle.icon}>
-          <TouchableOpacity onPress={() => navigation.navigate("Add Contact")}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("Add Contact")}
+            accessibilityLabel="Add contact"
+          >
             <AntDesign name="adduser" size={24} color="black"></AntDesign>
           </TouchableOpacity>
         </View>
         {loaded && (
-          <>
-            {contacts.map((contact) => (
-              <View key={contact.user_id} style={globalStyle.singlecontainer}>
-                <View style={globalStyle.singlecontainerContent}>
-                  <View style={globalStyle.singlecontainerRow}>
-                    <Text style={styles.name}>
-                      {contact.first_name} {contact.last_name}
-                    </Text>
+          <FlatList
+            data={contacts}
+            keyExtractor={(item) => item.user_id}
+            renderItem={({ item }) => {
+              //getProfilePhoto(item.user_id);
+              return (
+                <View style={globalStyle.singlecontainer}>
+                  {image && (
+                    <Image
+                      source={{
+                        uri: image,
+                      }}
+                      style={styles.image}
+                    />
+                  )}
+                  <View style={globalStyle.singlecontainerContent}>
+                    <View style={globalStyle.singlecontainerRow}>
+                      <Text style={styles.name}>
+                        {item.first_name} {item.last_name}
+                      </Text>
 
-                    <TouchableOpacity
-                      onPress={() => blockContact(contact.user_id)}
-                      style={styles.btnContainer}
-                    >
-                      <Entypo name="block" size={20} color="black"></Entypo>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      style={styles.btnContainer}
-                      onPress={() => handleRemoveContact(contact.user_id)}
-                    >
-                      <Ionicons
-                        name="remove-circle-outline"
-                        size={24}
-                        color="black"
-                      />
-                    </TouchableOpacity>
+                      <TouchableOpacity
+                        onPress={() => blockContact(item.user_id)}
+                        style={styles.btnContainer}
+                      >
+                        <Entypo name="block" size={20} color="black"></Entypo>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={styles.btnContainer}
+                        onPress={() => handleRemoveContact(item.user_id)}
+                      >
+                        <Ionicons
+                          name="remove-circle-outline"
+                          size={24}
+                          color="black"
+                        />
+                      </TouchableOpacity>
+                    </View>
+                    <Text>{item.email}</Text>
                   </View>
-                  <Text>{contact.email}</Text>
                 </View>
-              </View>
-            ))}
-          </>
+              );
+            }}
+          />
         )}
       </ScrollView>
     </View>
