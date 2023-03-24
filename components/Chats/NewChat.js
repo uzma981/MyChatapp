@@ -16,7 +16,6 @@ export default function NewChat(props) {
   const { navigation } = props;
   const [name, setname] = useState("");
 
-  //api call - Start a new conversation POST :/chat
   const addChat = async () => {
     const token = await AsyncStorage.getItem("token");
     const headers = {
@@ -48,37 +47,35 @@ export default function NewChat(props) {
 
   return (
     <View style={styles.container}>
-      <ScrollView>
-        <View style={globalStyle.headerContainer}>
-          <Text style={styles.headerText}>Add New Chat</Text>
-        </View>
-        <View style={styles.icon}>
-          <TouchableOpacity onPress={() => navigation.navigate("Chat")}>
-            <Ionicons name="arrow-back" size={20} color="black"></Ionicons>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.convoContainer}>
-          <TextInput
-            style={styles.textContainer}
-            placeholder="Start a new conversation..."
-            onChangeText={(text) => {
-              setname(text);
-            }}
-            value={name}
-          ></TextInput>
-          <TouchableOpacity
-            title="Create"
-            onPress={() => {
-              addChat();
-            }}
-            style={globalStyle.btn}
-          >
-            <View style={{ padding: 10 }}>
-              <Text style={globalStyle.btnText}>Create</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
+      <View style={globalStyle.headerContainer}>
+        <Text style={styles.headerText}>Add New Chat</Text>
+      </View>
+      <View style={styles.icon}>
+        <TouchableOpacity onPress={() => navigation.navigate("Chat")}>
+          <Ionicons name="arrow-back" size={20} color="black"></Ionicons>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.convoContainer}>
+        <TextInput
+          style={styles.textContainer}
+          placeholder="Start a new conversation..."
+          onChangeText={(text) => {
+            setname(text);
+          }}
+          value={name}
+        ></TextInput>
+        <TouchableOpacity
+          title="Create"
+          onPress={() => {
+            addChat();
+          }}
+          style={globalStyle.btn}
+        >
+          <View style={{ padding: 10 }}>
+            <Text style={globalStyle.btnText}>Create</Text>
+          </View>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -98,13 +95,14 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   convoContainer: {
-    justifyContent: "center",
-
-    padding: 20,
-    marginTop: 20,
+    alignItems: "center",
+    margin: 10,
   },
   textContainer: {
     height: 40,
+    width: "80%",
+    textAlign: "center",
+    textAlignVertical: "center",
     justifyContent: "center",
   },
 });

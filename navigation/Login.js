@@ -1,8 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import LoginForm from "../components/Form/LoginForm";
 const Login = (props) => {
+  const checkLoggedIn = async () => {
+    const id = await AsyncStorage.getItem("id");
+    const token = await AsyncStorage.getItem("token");
+
+    if (id && token) {
+      props.navigation.navigate("Home");
+    }
+  };
+  useEffect(() => {
+    checkLoggedIn();
+  }, []);
+
   const [displayMessage, setDisplayMessage] = useState("");
 
   const handleLogin = async (values) => {
