@@ -1,24 +1,22 @@
+import React, { useState, useEffect } from "react";
 import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
   StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  TextInput,
   FlatList,
 } from "react-native";
-import React from "react";
-import { AntDesign } from "@expo/vector-icons";
-import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useState, useEffect } from "react";
-
-import { Ionicons } from "@expo/vector-icons";
+import axios from "axios";
+import { AntDesign, Ionicons } from "@expo/vector-icons";
 import globalStyle from "../global-style";
-
-export default function SingleChat(props) {
-  const [chats, setChats] = useState([]);
+export default function ChatScreen(props) {
+  const [chats, setChats] = useState({});
   const [userId, setUserId] = useState(null);
-
+  const [showDeletePopup, setShowPopup] = useState(false);
+  const [itemChange, setItemChange] = useState(null);
+  const [popupMessage, setPopupMessage] = useState("");
   const [message, setMessage] = useState("");
 
   const chatId = props.route.params.chatId; // get chatId from route params
@@ -40,7 +38,8 @@ export default function SingleChat(props) {
         console.log(error.response);
       });
   };
-  const updateMessage = async (message_id) => {
+
+  const updateMessage = async (chatId, message_id) => {
     const token = await AsyncStorage.getItem("token");
 
     await axios
@@ -57,19 +56,20 @@ export default function SingleChat(props) {
       )
       .then(function (response) {
         console.log(response);
+        setMessage(""); // clear the message box
         viewSingleChat(chatId); // refresh the chat messages
       })
       .catch(function (error) {
         console.log(error.response);
       });
   };
+
   const deleteMessage = async (chatId, message_id) => {
     const token = await AsyncStorage.getItem("token");
 
     await axios
       .delete(
         `http://localhost:3333/api/1.0.0/chat/${chatId}/message/${message_id}`,
-
         {
           headers: {
             "X-Authorization": token,
@@ -78,6 +78,7 @@ export default function SingleChat(props) {
       )
       .then(function (response) {
         console.log(response);
+
         viewSingleChat(chatId); // refresh the chat messages
       })
       .catch(function (error) {
@@ -110,6 +111,21 @@ export default function SingleChat(props) {
       });
   };
 
+  const handleLongPress = (item) => {
+    setShowPopup(true);
+    setItemChange(item);
+  };
+
+  const handleDeleteMessage = () => {
+    deleteMessage(chatId, itemChange.message_id);
+    setShowPopup(false);
+  };
+
+  const handleUpdateMessage = () => {
+    updateMessage(chatId, itemChange.message_id);
+    setShowPopup(false);
+  };
+
   useEffect(() => {
     const unsubscribe = props.navigation.addListener("focus", async () => {
       await viewSingleChat(chatId);
@@ -138,12 +154,12 @@ export default function SingleChat(props) {
       </View>
     );
   };
+
   const renderItem = ({ item }) => {
     const sentByUser = item.author.user_id == userId;
+
     return (
-      <TouchableOpacity
-        onLongPress={() => deleteMessage(chatId, item.message_id)}
-      >
+      <TouchableOpacity onLongPress={() => handleLongPress(item)}>
         <View
           style={[
             styles.messageContainer,
@@ -157,6 +173,7 @@ export default function SingleChat(props) {
       </TouchableOpacity>
     );
   };
+
   const keyExtractor = (item) => {
     return item.message_id.toString();
   };
@@ -183,10 +200,28 @@ export default function SingleChat(props) {
         inverted={true}
       ></FlatList>
 
+      {showDeletePopup && (
+        <View style={[styles.popupContainer]}>
+          <TouchableOpacity
+            style={styles.popupButton}
+            onPress={handleDeleteMessage}
+          >
+            <Text style={styles.popupButton}>Delete Message</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.popupButton}
+            onPress={handleUpdateMessage}
+          >
+            <Text style={styles.popupButton}>Update Message</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
       <MessageBox />
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   main: {
     backgroundColor: "white",
@@ -249,5 +284,26 @@ const styles = StyleSheet.create({
     height: "100%",
     paddingLeft: 8,
     fontSize: 16,
+  },
+  popupContainer: {
+    // margin: 10,
+    backgroundColor: "#EFEBEB",
+    borderColor: "black",
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
+    zIndex: 1, // add this to make sure the pop-up always appears on top
+  },
+  // popupAboveMessageContainer: {
+  //   bottom: 10, // adjust this value to position the pop-up higher or lower
+  // },
+
+  popupButton: {
+    backgroundColor: "#fb5b5a",
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 5,
+    // marginBottom: 5,
+    margin: 5,
   },
 });
