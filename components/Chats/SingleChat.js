@@ -17,7 +17,14 @@ import globalStyle from "../global-style";
 
 export default function SingleChat(props) {
   const [chats, setChats] = useState([]);
+  const [userId, setUserId] = useState(null);
+
   const [message, setMessage] = useState("");
+  const loggedinUserID = async () => {
+    const id = await AsyncStorage.getItem("id");
+    console.log(id);
+    return id;
+  };
 
   const chatId = props.route.params.chatId; // get chatId from route params
 
@@ -65,8 +72,10 @@ export default function SingleChat(props) {
   };
 
   useEffect(() => {
-    const unsubscribe = props.navigation.addListener("focus", () => {
-      viewSingleChat(chatId);
+    const unsubscribe = props.navigation.addListener("focus", async () => {
+      await viewSingleChat(chatId);
+      const id = await AsyncStorage.getItem("id");
+      setUserId(id);
     });
     return unsubscribe;
   }, []);
@@ -90,8 +99,27 @@ export default function SingleChat(props) {
       </View>
     );
   };
+  const renderItem = ({ item }) => {
+    const sentByUser = item.author.user_id == userId;
+    return (
+      <View
+        style={[
+          styles.messageContainer,
+          sentByUser && styles.messageContainerSent, // add messageContainerSent style if sent by logged-in user
+        ]}
+      >
+        <Text style={styles.messageText}>
+          {item.author.first_name}: {item.message}
+        </Text>
+      </View>
+    );
+  };
+  const keyExtractor = (item) => {
+    return item.message_id.toString();
+  };
 
   const { navigation } = props;
+
   return (
     <View style={globalStyle.appcontainer}>
       <View style={globalStyle.headerContainer}>
@@ -104,24 +132,12 @@ export default function SingleChat(props) {
           <AntDesign name="setting" size={24} color="black" />
         </TouchableOpacity>
       </View>
-
       <FlatList
         data={chats.messages}
-        keyExtractor={(item) => item.message_id}
-        renderItem={({ item }) => (
-          <View
-            style={[
-              styles.messageContainer,
-              item.author.user_id == chats.creator.user_id &&
-                styles.messageContainerSent,
-            ]}
-          >
-            <Text style={styles.messageText}>
-              {item.author.first_name}: {item.message}
-            </Text>
-          </View>
-        )}
-      ></FlatList>
+        keyExtractor={keyExtractor}
+        renderItem={renderItem}
+        inverted={true}
+      />
 
       <MessageBox />
     </View>
