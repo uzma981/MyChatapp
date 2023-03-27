@@ -1,12 +1,12 @@
-import { View, Text } from "react-native";
-import React from "react";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import ChatsScreen from "../screens/ChatsScreen";
-import NewChat from "../components/Chats/NewChat";
-import SingleChat from "../components/Chats/SingleChat";
+import React from 'react';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import ChatsScreen from '../screens/ChatsScreen';
+import NewChat from '../components/Chats/NewChat';
+import SingleChat from '../components/Chats/SingleChat';
 
-import Settings from "../components/Chats/Settings";
-import ChatItem from "../components/Chats/ChatItem";
+import Settings from '../components/Chats/Settings';
+import ChatItem from '../components/Chats/ChatItem';
+// import DraftsScreen from "../screens/DraftsScreen";
 export default function ChatsNavigation() {
   const Stack = createNativeStackNavigator();
 
@@ -16,27 +16,29 @@ export default function ChatsNavigation() {
         name="Chat"
         component={ChatsScreen}
         options={{ headerShown: false }}
-      ></Stack.Screen>
+      />
+      {/* <Stack.Screen name = "Drafts"
+      component={DraftsScreen}></Stack.Screen> */}
       <Stack.Screen
         name="New Chat"
         component={NewChat}
         options={{ headerShown: false }}
-      ></Stack.Screen>
+      />
       <Stack.Screen
         name="Single Chat"
         component={SingleChat}
         options={{ headerShown: false }}
-      ></Stack.Screen>
+      />
       <Stack.Screen
         name="Settings"
         component={Settings}
         options={{ headerShown: false }}
-      ></Stack.Screen>
+      />
       <Stack.Screen
         name="Chat Item"
         component={ChatItem}
         options={{ headerShown: false }}
-      ></Stack.Screen>
+      />
     </Stack.Navigator>
   );
 }

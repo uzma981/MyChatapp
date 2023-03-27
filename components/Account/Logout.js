@@ -1,34 +1,31 @@
-import React, { useState } from "react";
+import React from 'react';
 import {
   Text,
-  TextInput,
   View,
   TouchableOpacity,
-  StyleSheet,
-} from "react-native";
-import axios from "axios";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+} from 'react-native';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 export default function Logout() {
   const handleLogout = async () => {
-    const sessionToken = await AsyncStorage.getItem("token");
-
+    const sessionToken = await AsyncStorage.getItem('token');
+    // const { navigation } = props;
     axios
-      .post("http://localhost:3333/api/1.0.0/logout", null, {
-        headers: { "X-Authorization": sessionToken },
+      .post('http://localhost:3333/api/1.0.0/logout', null, {
+        headers: { 'X-Authorization': sessionToken },
       })
       .then(async (response) => {
-        if (response.status == 200) {
-          const r = await AsyncStorage.removeItem("token");
+        if (response.status === 200) {
+          await AsyncStorage.removeItem('token');
           console.log(response);
-          await AsyncStorage.removeItem("id");
-          navigation.navigate("Login");
-        } else if (response.status == 401) {
-          console.log("401 error, unauthorised");
-        } else if (response.status == 500) {
-          console.log("500 error, server error");
-          setDisplayMessage(
-            "Something is wrong from our side, please try again later!"
-          );
+          await AsyncStorage.removeItem('id');
+          // eslint-disable-next-line no-undef
+          navigation.navigate('Login');
+        } else if (response.status === 401) {
+          console.log('401 error, unauthorised');
+        } else if (response.status === 500) {
+          console.log('500 error, server error');
         }
       });
   };
@@ -38,7 +35,7 @@ export default function Logout() {
         style={{
           marginTop: 5,
           marginBottom: 5,
-          backgroundColor: "#cecece",
+          backgroundColor: '#cecece',
           padding: 10,
         }}
       >
@@ -47,19 +44,3 @@ export default function Logout() {
     </TouchableOpacity>
   );
 }
-
-const styles = StyleSheet.create({
-  signupText: {
-    textAlign: "center",
-    color: "black",
-  },
-  btnDisabled: {
-    backgroundColor: "gray",
-    opacity: 0.5,
-    height: 40,
-    width: "80%",
-    marginBottom: 5,
-    marginTop: 20,
-    borderRadius: 40,
-  },
-});

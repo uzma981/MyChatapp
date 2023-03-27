@@ -1,5 +1,4 @@
-import React from "react";
-import SearchUserItem from "../Shared/SearchUserItem";
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -7,134 +6,137 @@ import {
   TouchableOpacity,
   StyleSheet,
   FlatList,
-  Button,
-} from "react-native";
+} from 'react-native';
+import { AntDesign, Ionicons } from '@expo/vector-icons';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import globalStyle from '../global-style';
 
-import { AntDesign } from "@expo/vector-icons";
-import { useState, useEffect } from "react";
-import globalStyle from "../global-style";
-import axios from "axios";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Ionicons } from "@expo/vector-icons";
 export default function Settings(props) {
-  const chatId = props.route.params.chatId;
-  const [name, setName] = useState("");
+  const { chatId } = props.route.params;
+
+  const [name, setName] = useState('');
   const [contacts, setContacts] = useState([]);
   const [userinChat, setuserinChat] = useState([]);
-  const handleUpdateChat = async (chat_id) => {
-    const token = await AsyncStorage.getItem("token");
+  const viewDetails = async (chatIdApi) => {
+    const token = await AsyncStorage.getItem('token');
+    await axios
+      .get(`http://localhost:3333/api/1.0.0/chat/${chatIdApi}`, {
+        headers: {
+          'X-Authorization': token,
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        const { members } = response.data;
+        setuserinChat(members);
+      })
+      .catch((error) => {
+        console.log(error.response);
+      });
+  };
+  const handleUpdateChat = async (chatIdApi) => {
+    const token = await AsyncStorage.getItem('token');
     const headers = {
-      "X-Authorization": token,
-      "Content-Type": "application/json",
+      'X-Authorization': token,
+      'Content-Type': 'application/json',
     };
     axios
       .patch(
-        `http://localhost:3333/api/1.0.0/chat/${chat_id}`,
-
+        `http://localhost:3333/api/1.0.0/chat/${chatIdApi}`,
         {
-          name: name,
+          name,
         },
         {
           headers,
-        }
+        },
       )
 
-      .then(function (response) {
+      .then((response) => {
         console.log(response);
       })
-      .catch(function (error) {
+      .catch((error) => {
         console.log(error.response);
       });
   };
 
-  const handleAddUserToChat = async (chat_id, user_id) => {
-    const token = await AsyncStorage.getItem("token");
+  const handleAddUserToChat = async (chatIdApi, userId) => {
+    const token = await AsyncStorage.getItem('token');
 
     await axios
       .post(
-        `http://localhost:3333/api/1.0.0/chat/${chat_id}/user/${user_id}`,
+        `http://localhost:3333/api/1.0.0/chat/${chatIdApi}/user/${userId}`,
         null,
         {
           headers: {
-            "X-Authorization": token,
+            'X-Authorization': token,
           },
-        }
+        },
       )
-      .then(function (response) {
+      .then((response) => {
         console.log(response);
+        viewDetails(chatId);
       })
-      .catch(function (error) {
+      .catch((error) => {
         console.log(error.response);
       });
   };
-  const handleRemoveUserFromChat = async (chat_id, user_id) => {
-    const token = await AsyncStorage.getItem("token");
+  const handleRemoveUserFromChat = async (chatIdApi, userId) => {
+    const token = await AsyncStorage.getItem('token');
 
     await axios
       .delete(
-        `http://localhost:3333/api/1.0.0/chat/${chat_id}/user/${user_id}`,
+        `http://localhost:3333/api/1.0.0/chat/${chatIdApi}/user/${userId}`,
 
         {
           headers: {
-            "X-Authorization": token,
+            'X-Authorization': token,
           },
-        }
+        },
       )
-      .then(function (response) {
+      .then((response) => {
         console.log(response);
         const updatedUsersinchat = userinChat.filter(
-          (user) => user.user_id !== user_id
+          (user) => user.user_id !== userId,
         );
         setuserinChat(updatedUsersinchat);
       })
-      .catch(function (error) {
+      .catch((error) => {
         console.log(error.response);
       });
   };
   const handleGetContact = async () => {
-    const token = await AsyncStorage.getItem("token");
+    const token = await AsyncStorage.getItem('token');
 
     await axios
-      .get(`http://localhost:3333/api/1.0.0/contacts`, {
+      .get('http://localhost:3333/api/1.0.0/contacts', {
         headers: {
-          "X-Authorization": token,
+          'X-Authorization': token,
         },
       })
-      .then(function (response) {
+      .then((response) => {
         console.log(response);
         setContacts(response.data);
       })
-      .catch(function (error) {
+      .catch((error) => {
         console.log(error.response);
       });
   };
 
   useEffect(() => {
-    const unsubscribe = props.navigation.addListener("focus", () => {
+    const unsubscribe = props.navigation.addListener('focus', () => {
       handleGetContact();
       viewDetails(chatId);
     });
     return unsubscribe;
   }, []);
 
-  const viewDetails = async (chat_id) => {
-    const token = await AsyncStorage.getItem("token");
-    await axios
-      .get(`http://localhost:3333/api/1.0.0/chat/` + chat_id, {
-        headers: {
-          "X-Authorization": token,
-        },
-      })
-      .then(function (response) {
-        console.log(response);
-        const members = response.data.members;
-        setuserinChat(members);
-      })
-      .catch(function (error) {
-        console.log(error.response);
-      });
-  };
-
+  const styles = StyleSheet.create({
+    name: {
+      flex: 1,
+      fontWeight: 'bold',
+    },
+  });
   return (
     <View style={globalStyle.appcontainer}>
       <View style={globalStyle.headerContainer}>
@@ -142,20 +144,19 @@ export default function Settings(props) {
       </View>
       <View
         style={{
-          flexDirection: "row",
-          alignContent: "center",
-          backgroundColor: "#EFEBEB",
+          flexDirection: 'row',
+          alignContent: 'center',
+          backgroundColor: '#EFEBEB',
           padding: 10,
           margin: 5,
           borderRadius: 30,
           marginRight: 10,
-          // flex: 1,
         }}
       >
         <TextInput
           style={{
-            width: "100%",
-            textAlign: "center",
+            width: '100%',
+            textAlign: 'center',
           }}
           placeholder="Update Conversation name:"
           onChangeText={(text) => setName(text)}
@@ -163,8 +164,8 @@ export default function Settings(props) {
         />
         <TouchableOpacity
           style={{
-            justifyContent: "center",
-            alignItems: "center",
+            justifyContent: 'center',
+            alignItems: 'center',
             marginRight: 5,
           }}
           onPress={() => handleUpdateChat(chatId)}
@@ -181,12 +182,14 @@ export default function Settings(props) {
             <View style={globalStyle.singlecontainerContent}>
               <View style={globalStyle.singlecontainerRow}>
                 <Text style={styles.name}>
-                  {member.first_name} {member.last_name}
+                  {member.first_name}
+                  {' '}
+                  {member.last_name}
                 </Text>
               </View>
               <Text>{member.email}</Text>
             </View>
-            <View style={styles.icon}>
+            <View style={globalStyle.icon}>
               <TouchableOpacity
                 onPress={() => handleRemoveUserFromChat(chatId, member.user_id)}
               >
@@ -199,11 +202,11 @@ export default function Settings(props) {
             </View>
           </View>
         )}
-      ></FlatList>
+      />
       <View
         style={{
-          alignItems: "center",
-          backgroundColor: "#fdaca5",
+          alignItems: 'center',
+          backgroundColor: '#fdaca5',
           padding: 10,
         }}
       >
@@ -218,7 +221,8 @@ export default function Settings(props) {
             <View style={globalStyle.singlecontainerContent}>
               <View style={globalStyle.singlecontainerRow}>
                 <Text style={styles.name}>
-                  {contact.first_name} {contact.last_name}
+                  {contact.first_name}
+                  {contact.last_name}
                 </Text>
               </View>
               <Text>{contact.email}</Text>
@@ -236,9 +240,3 @@ export default function Settings(props) {
     </View>
   );
 }
-const styles = StyleSheet.create({
-  name: {
-    flex: 1,
-    fontWeight: "bold",
-  },
-});

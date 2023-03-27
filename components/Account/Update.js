@@ -1,6 +1,9 @@
-import { View, Text, TextInput, TouchableOpacity } from "react-native";
-import React from "react";
-import globalStyle from "../global-style";
+import {
+  View, Text, TextInput, TouchableOpacity,
+} from 'react-native';
+import React from 'react';
+import globalStyle from '../global-style';
+
 export default function Update() {
   return (
     <View>

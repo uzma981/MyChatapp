@@ -1,112 +1,112 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   Text,
   View,
   TouchableOpacity,
-  TextInput,
   FlatList,
-} from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
-import { AntDesign, Ionicons } from "@expo/vector-icons";
-import globalStyle from "../global-style";
+} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import { AntDesign } from '@expo/vector-icons';
+import MessageBox from './MessageBox';
+import globalStyle from '../global-style';
+
 export default function ChatScreen(props) {
   const [chats, setChats] = useState({});
   const [userId, setUserId] = useState(null);
   const [showDeletePopup, setShowPopup] = useState(false);
   const [itemChange, setItemChange] = useState(null);
-  const [popupMessage, setPopupMessage] = useState("");
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState('');
 
-  const chatId = props.route.params.chatId; // get chatId from route params
+  const { chatId } = props.route.params; // get chatId from route params
 
-  const viewSingleChat = async (chat_id) => {
-    const token = await AsyncStorage.getItem("token");
+  const viewSingleChat = async (chatIdApi) => {
+    const token = await AsyncStorage.getItem('token');
 
     await axios
-      .get(`http://localhost:3333/api/1.0.0/chat/` + chat_id, {
+      .get(`http://localhost:3333/api/1.0.0/chat/${chatIdApi}`, {
         headers: {
-          "X-Authorization": token,
+          'X-Authorization': token,
         },
       })
-      .then(function (response) {
+      .then((response) => {
         console.log(response.data.messages);
         setChats(response.data);
       })
-      .catch(function (error) {
+      .catch((error) => {
         console.log(error.response);
       });
   };
 
-  const updateMessage = async (chatId, message_id) => {
-    const token = await AsyncStorage.getItem("token");
+  const updateMessage = async (chatIdApi, messageId) => {
+    const token = await AsyncStorage.getItem('token');
 
     await axios
       .patch(
-        `http://localhost:3333/api/1.0.0/chat/${chatId}/message/${message_id}`,
+        `http://localhost:3333/api/1.0.0/chat/${chatIdApi}/message/${messageId}`,
         {
-          message: message,
+          message,
         },
         {
           headers: {
-            "X-Authorization": token,
+            'X-Authorization': token,
           },
-        }
+        },
       )
-      .then(function (response) {
+      .then((response) => {
         console.log(response);
-        setMessage(""); // clear the message box
+        setMessage(''); // clear the message box
         viewSingleChat(chatId); // refresh the chat messages
       })
-      .catch(function (error) {
+      .catch((error) => {
         console.log(error.response);
       });
   };
 
-  const deleteMessage = async (chatId, message_id) => {
-    const token = await AsyncStorage.getItem("token");
+  const deleteMessage = async (chatIdApi, messageId) => {
+    const token = await AsyncStorage.getItem('token');
 
     await axios
       .delete(
-        `http://localhost:3333/api/1.0.0/chat/${chatId}/message/${message_id}`,
+        `http://localhost:3333/api/1.0.0/chat/${chatIdApi}/message/${messageId}`,
         {
           headers: {
-            "X-Authorization": token,
+            'X-Authorization': token,
           },
-        }
+        },
       )
-      .then(function (response) {
+      .then((response) => {
         console.log(response);
 
         viewSingleChat(chatId); // refresh the chat messages
       })
-      .catch(function (error) {
+      .catch((error) => {
         console.log(error.response);
       });
   };
 
   const sendMessage = async () => {
-    const token = await AsyncStorage.getItem("token");
+    const token = await AsyncStorage.getItem('token');
 
     await axios
       .post(
         `http://localhost:3333/api/1.0.0/chat/${chatId}/message`,
         {
-          message: message,
+          message,
         },
         {
           headers: {
-            "X-Authorization": token,
+            'X-Authorization': token,
           },
-        }
+        },
       )
-      .then(function (response) {
+      .then((response) => {
         console.log(response);
-        setMessage(""); // clear the message box
+        setMessage(''); // clear the message box
         viewSingleChat(chatId); // refresh the chat messages
       })
-      .catch(function (error) {
+      .catch((error) => {
         console.log(error.response);
       });
   };
@@ -127,35 +127,69 @@ export default function ChatScreen(props) {
   };
 
   useEffect(() => {
-    const unsubscribe = props.navigation.addListener("focus", async () => {
+    const unsubscribe = props.navigation.addListener('focus', async () => {
       await viewSingleChat(chatId);
-      const id = await AsyncStorage.getItem("id");
+      const id = await AsyncStorage.getItem('id');
       setUserId(id);
     });
     return unsubscribe;
   }, []);
+  const styles = StyleSheet.create({
+    main: {
+      backgroundColor: 'white',
+      flex: 1,
+      height: '100%',
+    },
+    messageContainer: {
+      alignSelf: 'flex-start',
+      backgroundColor: '#cecece',
+      borderRadius: 20,
+      paddingHorizontal: 15,
+      paddingVertical: 10,
+      marginVertical: 5,
+      maxWidth: '70%',
+    },
 
-  const MessageBox = () => {
-    return (
-      <View style={styles.container}>
-        <View style={styles.mainContainer}>
-          <TextInput
-            value={message}
-            onChangeText={(text) => setMessage(text)}
-            style={styles.textInput}
-            autoFocus={true}
-          />
-          <TouchableOpacity onPress={sendMessage}>
-            <View style={styles.btnContainer}>
-              <Ionicons name="send" size={20} color="white" />
-            </View>
-          </TouchableOpacity>
-        </View>
-      </View>
-    );
-  };
+    messageContainerSent: {
+      alignSelf: 'flex-end',
+      backgroundColor: '#fdaca5',
+      borderRadius: 20,
+      paddingHorizontal: 15,
+      paddingVertical: 10,
+      marginVertical: 5,
+      maxWidth: '70%',
+    },
+
+    messageText: {
+      fontSize: 16,
+      lineHeight: 22,
+    },
+    searchInput: {
+      width: '100%',
+      height: '100%',
+      paddingLeft: 8,
+      fontSize: 16,
+    },
+    popupContainer: {
+      backgroundColor: '#EFEBEB',
+      borderColor: 'black',
+      alignItems: 'center',
+      justifyContent: 'center',
+      flexDirection: 'row',
+      zIndex: 1,
+    },
+
+    popupButton: {
+      backgroundColor: '#fb5b5a',
+      paddingHorizontal: 10,
+      paddingVertical: 5,
+      borderRadius: 5,
+      margin: 5,
+    },
+  });
 
   const renderItem = ({ item }) => {
+    // eslint-disable-next-line eqeqeq
     const sentByUser = item.author.user_id == userId;
 
     return (
@@ -167,39 +201,41 @@ export default function ChatScreen(props) {
           ]}
         >
           <Text style={styles.messageText}>
-            {item.author.first_name}: {item.message}
+            {item.author.first_name}
+            :
+            {' '}
+            {item.message}
           </Text>
         </View>
       </TouchableOpacity>
     );
   };
 
-  const keyExtractor = (item) => {
-    return item.message_id.toString();
-  };
+  const keyExtractor = (item) => item.message_id.toString();
 
   const { navigation } = props;
 
   return (
     <View style={globalStyle.appcontainer}>
       <View style={globalStyle.headerContainer}>
-        <Text style={globalStyle.headerText}> {chats.name}</Text>
+        <Text style={globalStyle.headerText}>
+          {' '}
+          {chats.name}
+        </Text>
       </View>
       <View style={globalStyle.icon}>
         <TouchableOpacity
-          onPress={() => navigation.navigate("Settings", { chatId: chatId })}
+          onPress={() => navigation.navigate('Settings', { chatId })}
         >
           <AntDesign name="setting" size={24} color="black" />
         </TouchableOpacity>
       </View>
-
       <FlatList
         data={chats.messages}
         keyExtractor={keyExtractor}
         renderItem={renderItem}
-        inverted={true}
-      ></FlatList>
-
+        inverted
+      />
       {showDeletePopup && (
         <View style={[styles.popupContainer]}>
           <TouchableOpacity
@@ -217,93 +253,7 @@ export default function ChatScreen(props) {
         </View>
       )}
 
-      <MessageBox />
+      <MessageBox message={message} setMessage={setMessage} sendMessage={sendMessage} />
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  main: {
-    backgroundColor: "white",
-    flex: 1,
-    height: "100%",
-  },
-  container: {
-    alignItems: "baseline",
-    flexDirection: "row",
-    margin: 10,
-  },
-  textInput: {
-    width: "80%",
-  },
-
-  messageContainer: {
-    alignSelf: "flex-start",
-    backgroundColor: "#cecece",
-    borderRadius: 20,
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    marginVertical: 5,
-    maxWidth: "70%",
-  },
-
-  messageContainerSent: {
-    alignSelf: "flex-end",
-    backgroundColor: "#fdaca5",
-    borderRadius: 20,
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    marginVertical: 5,
-    maxWidth: "70%",
-  },
-
-  messageText: {
-    fontSize: 16,
-    lineHeight: 22,
-  },
-
-  mainContainer: {
-    flexDirection: "row",
-    backgroundColor: "#EFEBEB",
-    padding: 5,
-    margin: 5,
-    borderRadius: 30,
-    marginRight: 10,
-    flex: 1,
-  },
-  btnContainer: {
-    backgroundColor: "#fb5b5a",
-    borderRadius: 50,
-    width: 50,
-    height: 35,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  searchInput: {
-    width: "100%",
-    height: "100%",
-    paddingLeft: 8,
-    fontSize: 16,
-  },
-  popupContainer: {
-    // margin: 10,
-    backgroundColor: "#EFEBEB",
-    borderColor: "black",
-    alignItems: "center",
-    justifyContent: "center",
-    flexDirection: "row",
-    zIndex: 1, // add this to make sure the pop-up always appears on top
-  },
-  // popupAboveMessageContainer: {
-  //   bottom: 10, // adjust this value to position the pop-up higher or lower
-  // },
-
-  popupButton: {
-    backgroundColor: "#fb5b5a",
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 5,
-    // marginBottom: 5,
-    margin: 5,
-  },
-});

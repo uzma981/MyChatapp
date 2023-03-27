@@ -1,43 +1,38 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import {
-  Text,
-  View,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-  FlatList,
-} from "react-native";
-import { Entypo } from "@expo/vector-icons";
-import axios from "axios";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+  Text, View, TouchableOpacity, FlatList,
+} from 'react-native';
+import { Entypo } from '@expo/vector-icons';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import ChatItem from "../components/Chats/ChatItem";
-import globalStyle from "../components/global-style";
+import ChatItem from '../components/Chats/ChatItem';
+import globalStyle from '../components/global-style';
 
-const ChatsScreen = (props) => {
+function ChatsScreen(props) {
   const { navigation } = props;
   const [chats, setChats] = useState([]);
 
   const handleGetChat = async () => {
-    const token = await AsyncStorage.getItem("token");
+    const token = await AsyncStorage.getItem('token');
 
     await axios
-      .get(`http://localhost:3333/api/1.0.0/chat`, {
+      .get('http://localhost:3333/api/1.0.0/chat', {
         headers: {
-          "X-Authorization": token,
+          'X-Authorization': token,
         },
       })
-      .then(function (response) {
+      .then((response) => {
         console.log(response.data);
         setChats(response.data);
       })
-      .catch(function (error) {
+      .catch((error) => {
         console.log(error.response);
       });
   };
 
   useEffect(() => {
-    const unsubscribe = props.navigation.addListener("focus", () => {
+    const unsubscribe = props.navigation.addListener('focus', () => {
       handleGetChat();
     });
     return unsubscribe;
@@ -49,7 +44,7 @@ const ChatsScreen = (props) => {
         <Text style={globalStyle.headerText}>Chats</Text>
       </View>
       <View style={globalStyle.icon}>
-        <TouchableOpacity onPress={() => navigation.navigate("New Chat")}>
+        <TouchableOpacity onPress={() => navigation.navigate('New Chat')}>
           <Entypo name="new-message" size={24} color="black" />
         </TouchableOpacity>
       </View>
@@ -61,9 +56,9 @@ const ChatsScreen = (props) => {
             <ChatItem chat={item} navigation={navigation} />
           </View>
         )}
-      ></FlatList>
+      />
     </View>
   );
-};
+}
 
 export default ChatsScreen;

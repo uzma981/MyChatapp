@@ -1,23 +1,24 @@
+import React from 'react';
 import {
   Text,
   TextInput,
   View,
   TouchableOpacity,
-  StyleSheet,
-} from "react-native";
-import globalStyle from "../global-style";
+} from 'react-native';
+import { Formik } from 'formik';
+import globalStyle from '../global-style';
 
-import { Formik } from "formik";
-import { SignUpSchema } from "./Validation/validationschema";
+import { SignUpSchema } from './Validation/validationschema';
+
 export default function SignUpForm({ handleSignup, navigation }) {
   return (
     <Formik
       initialValues={{
-        firstName: "",
-        lastName: "",
-        email: "",
-        password: "",
-        confirmPassword: "",
+        firstName: '',
+        lastName: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
       }}
       validationSchema={SignUpSchema}
       onSubmit={handleSignup}
@@ -31,73 +32,74 @@ export default function SignUpForm({ handleSignup, navigation }) {
         touched,
       }) => (
         <View style={globalStyle.welcomecontainer}>
-          <Text style={{ fontSize: 24, fontWeight: "bold" }}>
-            WhatsThat<Text style={{ color: "#fb5b5a" }}> App</Text>
+          <Text style={{ fontSize: 24, fontWeight: 'bold' }}>
+            WhatsThat
+            <Text style={{ color: '#fb5b5a' }}> App</Text>
           </Text>
-          <Text style={{ fontSize: 20, fontWeight: "bold" }}>Sign Up</Text>
+          <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Sign Up</Text>
           <TextInput
             style={globalStyle.inputBox}
             placeholder="First Name"
-            onChangeText={handleChange("firstName")}
-            onBlur={handleBlur("firstName")}
+            onChangeText={handleChange('firstName')}
+            onBlur={handleBlur('firstName')}
             value={values.firstName}
           />
           {errors.firstName && touched.firstName && (
-            <Text style={{ color: "red" }}>{errors.firstName}</Text>
+            <Text style={{ color: 'red' }}>{errors.firstName}</Text>
           )}
           <TextInput
             style={globalStyle.inputBox}
             placeholder="Last Name"
-            onChangeText={handleChange("lastName")}
-            onBlur={handleBlur("lastName")}
+            onChangeText={handleChange('lastName')}
+            onBlur={handleBlur('lastName')}
             value={values.lastName}
           />
           {errors.lastName && touched.lastName && (
-            <Text style={{ color: "red" }}>{errors.lastName}</Text>
+            <Text style={{ color: 'red' }}>{errors.lastName}</Text>
           )}
           <TextInput
             style={globalStyle.inputBox}
             placeholder="Email"
             keyboardType="email-address"
-            onChangeText={handleChange("email")}
-            onBlur={handleBlur("email")}
+            onChangeText={handleChange('email')}
+            onBlur={handleBlur('email')}
             value={values.email}
           />
 
           {errors.email && touched.email && (
-            <Text style={{ color: "red" }}>{errors.email}</Text>
+            <Text style={{ color: 'red' }}>{errors.email}</Text>
           )}
           <TextInput
             style={globalStyle.inputBox}
             placeholder="Password"
             keyboardType="visible-password"
-            onChangeText={handleChange("password")}
-            onBlur={handleBlur("password")}
+            onChangeText={handleChange('password')}
+            onBlur={handleBlur('password')}
             value={values.password}
-            secureTextEntry={true}
+            secureTextEntry
           />
           {errors.password && touched.password && (
-            <Text style={{ color: "red" }}>{errors.password}</Text>
+            <Text style={{ color: 'red' }}>{errors.password}</Text>
           )}
           <TextInput
             style={globalStyle.inputBox}
             placeholder="Confirm Password"
             keyboardType="visible-password"
-            onChangeText={handleChange("confirmPassword")}
-            onBlur={handleBlur("confirmPassword")}
+            onChangeText={handleChange('confirmPassword')}
+            onBlur={handleBlur('confirmPassword')}
             value={values.confirmPassword}
-            secureTextEntry={true}
+            secureTextEntry
           />
           {errors.confirmPassword && touched.confirmPassword && (
-            <Text style={{ color: "red" }}>{errors.confirmPassword}</Text>
+            <Text style={{ color: 'red' }}>{errors.confirmPassword}</Text>
           )}
           <TouchableOpacity
             title="Sign Up"
             onPress={handleSubmit}
             style={[
               globalStyle.btn,
-              (errors.password || errors.confirmPassword || errors.email) &&
-                globalStyle.btnDisabled,
+              (errors.password || errors.confirmPassword || errors.email)
+                && globalStyle.btnDisabled,
             ]}
             disabled={errors.email && errors.password && errors.confirmPassword}
           >
@@ -107,7 +109,7 @@ export default function SignUpForm({ handleSignup, navigation }) {
           </TouchableOpacity>
           <TouchableOpacity
             title="LoginText"
-            onPress={() => navigation.navigate("Login")}
+            onPress={() => navigation.navigate('Login')}
             style={{ marginBottom: 10 }}
           >
             <View style={{ padding: 10 }}>
@@ -119,4 +121,3 @@ export default function SignUpForm({ handleSignup, navigation }) {
     </Formik>
   );
 }
-const styles = StyleSheet.create({});

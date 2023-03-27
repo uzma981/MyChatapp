@@ -1,49 +1,61 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
   View,
-  SafeAreaView,
   StyleSheet,
   Image,
   TouchableOpacity,
-} from "react-native";
-import * as ImagePicker from "expo-image-picker";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Ionicons } from "@expo/vector-icons";
-import axios from "axios";
-import UpdateForm from "../components/Form/UpdateForm";
+} from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Ionicons } from '@expo/vector-icons';
+import axios from 'axios';
+import UpdateForm from '../components/Form/UpdateForm';
 
-const AccountScreen = (props) => {
+function AccountScreen(props) {
   const [image, setImage] = useState(null);
 
   const { navigation } = props;
 
   const getProfilePhoto = async () => {
-    const id = await AsyncStorage.getItem("id");
-    const token = await AsyncStorage.getItem("token");
+    const id = await AsyncStorage.getItem('id');
+    const token = await AsyncStorage.getItem('token');
 
     await axios
-      .get("http://localhost:3333/api/1.0.0/user/" + id + "/photo", {
+      .get(`http://localhost:3333/api/1.0.0/user/${id}/photo`, {
         headers: {
-          "X-Authorization": token,
-          "Content-Type": "image/png",
+          'X-Authorization': token,
+          'Content-Type': 'image/png',
         },
-        responseType: "blob",
+        responseType: 'blob',
       })
-      .then(function (response) {
+      .then((response) => {
         console.log(response);
         const url = URL.createObjectURL(response.data);
         console.log(url);
         setImage(url);
       })
-      .catch(function (error) {
+      .catch((error) => {
         console.log(error.response);
       });
   };
-  //add a useeffect for the image
   useEffect(() => {
     getProfilePhoto();
   }, []);
+  async function sendToServer(data) {
+    console.log('HERE', data.uri);
 
+    const id = await AsyncStorage.getItem('id');
+    const token = await AsyncStorage.getItem('token');
+    const res = await fetch(data.uri);
+    const blob = await res.blob();
+
+    await axios.post(`http://localhost:3333/api/1.0.0/user/${id}/photo`, blob, {
+      headers: {
+        'X-Authorization': token,
+        'Content-Type': 'image/png',
+      },
+    });
+  }
   const uploadProfilePhoto = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -59,32 +71,13 @@ const AccountScreen = (props) => {
       sendToServer(result);
     }
   };
-  async function sendToServer(data) {
-    console.log("HERE", data.uri);
-
-    const id = await AsyncStorage.getItem("id");
-    const token = await AsyncStorage.getItem("token");
-    let res = await fetch(data.uri);
-    let blob = await res.blob();
-
-    await axios.post(
-      "http://localhost:3333/api/1.0.0/user/" + id + "/photo",
-      blob,
-      {
-        headers: {
-          "X-Authorization": token,
-          "Content-Type": "image/png",
-        },
-      }
-    );
-  }
 
   const handleUpdate = async (values) => {
-    const token = await AsyncStorage.getItem("token");
-    const id = await AsyncStorage.getItem("id");
+    const token = await AsyncStorage.getItem('token');
+    const id = await AsyncStorage.getItem('id');
     const headers = {
-      "X-Authorization": token,
-      "Content-Type": "application/json",
+      'X-Authorization': token,
+      'Content-Type': 'application/json',
     };
     axios
       .patch(
@@ -98,27 +91,69 @@ const AccountScreen = (props) => {
         },
         {
           headers,
-        }
+        },
       )
 
-      .then(function (response) {
+      .then((response) => {
         console.log(response);
       })
-      .catch(function (error) {
+      .catch((error) => {
         console.log(error.response);
       });
   };
+  const styles = StyleSheet.create({
+    container: {
+      width: '100%',
+      height: '100%',
+      alignSelf: 'center',
+      alignItems: 'center',
+      backgroundColor: 'white',
+    },
+    profileImage: {
+      width: 150,
+      height: 150,
+      borderRadius: 150 / 2,
+      overflow: 'hidden',
+      borderColor: 'black',
+    },
+    image: {
+      flex: 1,
+      width: undefined,
+      height: undefined,
+      borderColor: 'black',
+    },
+    dm: {
+      backgroundColor: 'gray',
+      position: 'absolute',
+      top: 20,
+      width: 40,
+      height: 40,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    add: {
+      backgroundColor: '#41444B',
+      position: 'absolute',
+      bottom: 0,
+      right: 0,
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+  });
 
   return (
     <View style={styles.container}>
-      <View style={{ alignSelf: "center" }}>
+      <View style={{ alignSelf: 'center' }}>
         <View style={styles.profileImage}>
           {image && (
             <Image
               source={{ uri: image }}
               style={styles.image}
               resizeMode="cover"
-            ></Image>
+            />
           )}
         </View>
 
@@ -129,69 +164,17 @@ const AccountScreen = (props) => {
               size={48}
               color="gray"
               style={{ marginTop: 6, marginLeft: 2 }}
-            ></Ionicons>
+            />
           </View>
         </TouchableOpacity>
       </View>
       <UpdateForm
         handleUpdate={handleUpdate}
         navigation={navigation}
-      ></UpdateForm>
-      {/* <TouchableOpacity onPress={() => upload()}>
-        <View style={styles.add}>
-          <Ionicons
-            name="add-outline"
-            size={48}
-            color="gray"
-            style={{ marginTop: 6, marginLeft: 2 }}
-          ></Ionicons>
-        </View>
-      </TouchableOpacity> */}
+      />
+
     </View>
   );
-};
-const styles = StyleSheet.create({
-  container: {
-    //justifyContent: "flex-start",
-    width: "100%",
-    height: "100%",
-    alignSelf: "center",
-    alignItems: "center",
-    backgroundColor: "white",
-  },
-  profileImage: {
-    width: 150,
-    height: 150,
-    borderRadius: 150 / 2,
-    overflow: "hidden",
-    borderColor: "black",
-  },
-  image: {
-    flex: 1,
-    width: undefined,
-    height: undefined,
-    borderColor: "black",
-  },
-  dm: {
-    backgroundColor: "gray",
-    position: "absolute",
-    top: 20,
-    width: 40,
-    height: 40,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  add: {
-    backgroundColor: "#41444B",
-    position: "absolute",
-    bottom: 0,
-    right: 0,
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
+}
 
 export default AccountScreen;

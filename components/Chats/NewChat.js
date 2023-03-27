@@ -1,58 +1,84 @@
+/* eslint-disable no-console */
 import {
   View,
   Text,
   TextInput,
   StyleSheet,
-  ScrollView,
   TouchableOpacity,
-} from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import axios from "axios";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { useState } from "react";
-import globalStyle from "../global-style";
+} from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useState } from 'react';
+import globalStyle from '../global-style';
 
 export default function NewChat(props) {
   const { navigation } = props;
-  const [name, setname] = useState("");
+  const [name, setname] = useState('');
 
   const addChat = async () => {
-    const token = await AsyncStorage.getItem("token");
+    const token = await AsyncStorage.getItem('token');
     const headers = {
-      "X-Authorization": token,
-      "Content-Type": "application/json",
+      'X-Authorization': token,
+      'Content-Type': 'application/json',
     };
     axios
       .post(
-        `http://localhost:3333/api/1.0.0/chat`,
+        'http://localhost:3333/api/1.0.0/chat',
 
         {
-          name: name,
+          name,
         },
         {
           headers,
-        }
+        },
       )
 
-      .then(function (response) {
-        if (response.status == 201) {
-          navigation.navigate("Chat");
+      .then((response) => {
+        if (response.status === 201) {
+          navigation.navigate('Chat');
         }
         console.log(response);
       })
-      .catch(function (error) {
+      .catch((error) => {
         console.log(error.response);
       });
   };
+  const styles = StyleSheet.create({
+    container: {
+      backgroundColor: 'white',
+      height: '100%',
+    },
+    headerText: {
+      fontSize: 20,
+    },
 
+    icon: {
+      alignItems: 'flex-start',
+      marginRight: 16,
+      marginBottom: 10,
+      marginLeft: 8,
+    },
+    convoContainer: {
+      alignItems: 'center',
+      margin: 10,
+    },
+    textContainer: {
+      height: 40,
+      width: '80%',
+      textAlign: 'center',
+      textAlignVertical: 'center',
+      justifyContent: 'center',
+    },
+  });
   return (
     <View style={styles.container}>
       <View style={globalStyle.headerContainer}>
         <Text style={styles.headerText}>Add New Chat</Text>
       </View>
       <View style={styles.icon}>
-        <TouchableOpacity onPress={() => navigation.navigate("Chat")}>
-          <Ionicons name="arrow-back" size={20} color="black"></Ionicons>
+        <TouchableOpacity onPress={() => navigation.navigate('Chat')}>
+          <Ionicons name="arrow-back" size={20} color="black" />
         </TouchableOpacity>
       </View>
       <View style={styles.convoContainer}>
@@ -63,7 +89,7 @@ export default function NewChat(props) {
             setname(text);
           }}
           value={name}
-        ></TextInput>
+        />
         <TouchableOpacity
           title="Create"
           onPress={() => {
@@ -79,30 +105,3 @@ export default function NewChat(props) {
     </View>
   );
 }
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "white",
-    height: "100%",
-  },
-  headerText: {
-    fontSize: 20,
-  },
-
-  icon: {
-    alignItems: "flex-start",
-    marginRight: 16,
-    marginBottom: 10,
-    marginLeft: 8,
-  },
-  convoContainer: {
-    alignItems: "center",
-    margin: 10,
-  },
-  textContainer: {
-    height: 40,
-    width: "80%",
-    textAlign: "center",
-    textAlignVertical: "center",
-    justifyContent: "center",
-  },
-});
