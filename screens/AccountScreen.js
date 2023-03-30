@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { Ionicons } from '@expo/vector-icons';
 import axios from 'axios';
 import UpdateForm from '../components/Form/UpdateForm';
@@ -79,16 +80,26 @@ function AccountScreen(props) {
       'X-Authorization': token,
       'Content-Type': 'application/json',
     };
+    const dataToUpdate = {};
+    if (values.firstName) {
+      dataToUpdate.first_name = values.firstName;
+    }
+
+    if (values.lastName) {
+      dataToUpdate.last_name = values.lastName;
+    }
+
+    if (values.email) {
+      dataToUpdate.email = values.email;
+    }
+
+    if (values.password) {
+      dataToUpdate.password = values.password;
+    }
     axios
       .patch(
         `http://localhost:3333/api/1.0.0/user/${id}`,
-
-        {
-          first_name: values.firstName,
-          last_name: values.lastName,
-          email: values.email,
-          password: values.password,
-        },
+        dataToUpdate,
         {
           headers,
         },
