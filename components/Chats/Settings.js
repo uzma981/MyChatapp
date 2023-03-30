@@ -7,6 +7,7 @@ import {
   StyleSheet,
   FlatList,
 } from 'react-native';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { AntDesign, Ionicons } from '@expo/vector-icons';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -222,6 +223,7 @@ export default function Settings(props) {
               <View style={globalStyle.singlecontainerRow}>
                 <Text style={styles.name}>
                   {contact.first_name}
+                  {' '}
                   {contact.last_name}
                 </Text>
               </View>
