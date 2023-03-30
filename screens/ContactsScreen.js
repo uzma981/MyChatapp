@@ -7,15 +7,15 @@ import {
   ScrollView,
   FlatList,
 } from 'react-native';
-import { AntDesign, Entypo, Ionicons } from '@expo/vector-icons';
-
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { AntDesign } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import globalStyle from '../components/global-style';
+import ContactItem from '../components/Shared/ContactItem';
 
 function ContactsScreen(props) {
   const [contacts, setContacts] = useState([]);
-  const [loaded, setLoaded] = useState(false);
   const handleGetContact = async () => {
     const token = await AsyncStorage.getItem('token');
 
@@ -27,12 +27,11 @@ function ContactsScreen(props) {
       })
       .then((response) => {
         console.log(response.data);
+        // setUserIdPhoto(response.data);
         setContacts(response.data);
-        setLoaded(true);
       })
       .catch((error) => {
         console.log(error.response);
-        setLoaded(true);
       });
   };
 
@@ -43,46 +42,46 @@ function ContactsScreen(props) {
     return unsubscribe;
   }, []);
 
-  const handleRemoveContact = async (userId) => {
-    const token = await AsyncStorage.getItem('token');
+  // const handleRemoveContact = async (userId) => {
+  //   const token = await AsyncStorage.getItem('token');
 
-    await axios
-      .delete(`http://localhost:3333/api/1.0.0/user/${userId}/contact`, {
-        headers: {
-          'X-Authorization': token,
-        },
-      })
-      .then((response) => {
-        console.log(response);
-        // Filter out the removed contact from the contacts array
-        const updatedContacts = contacts.filter(
-          (contact) => contact.user_id !== userId,
-        );
-        setContacts(updatedContacts);
-      })
-      .catch((error) => {
-        console.log(error.response);
-      });
-  };
-  const blockContact = async (userId) => {
-    const token = await AsyncStorage.getItem('token');
-    await axios
-      .post(`http://localhost:3333/api/1.0.0/user/${userId}/block`, null, {
-        headers: {
-          'X-Authorization': token,
-        },
-      })
-      .then((response) => {
-        console.log(response);
-        const updatedContacts = contacts.filter(
-          (contact) => contact.user_id !== userId,
-        );
-        setContacts(updatedContacts);
-      })
-      .catch((error) => {
-        console.log(error.response);
-      });
-  };
+  //   await axios
+  //     .delete(`http://localhost:3333/api/1.0.0/user/${userId}/contact`, {
+  //       headers: {
+  //         'X-Authorization': token,
+  //       },
+  //     })
+  //     .then((response) => {
+  //       console.log(response);
+  //       // Filter out the removed contact from the contacts array
+  //       const updatedContacts = contacts.filter(
+  //         (contact) => contact.user_id !== userId,
+  //       );
+  //       setContacts(updatedContacts);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error.response);
+  //     });
+  // };
+  // const blockContact = async (userId) => {
+  //   const token = await AsyncStorage.getItem('token');
+  //   await axios
+  //     .post(`http://localhost:3333/api/1.0.0/user/${userId}/block`, null, {
+  //       headers: {
+  //         'X-Authorization': token,
+  //       },
+  //     })
+  //     .then((response) => {
+  //       console.log(response);
+  //       const updatedContacts = contacts.filter(
+  //         (contact) => contact.user_id !== userId,
+  //       );
+  //       setContacts(updatedContacts);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error.response);
+  //     });
+  // };
   const { navigation } = props;
   const styles = StyleSheet.create({
     name: {
@@ -137,52 +136,17 @@ function ContactsScreen(props) {
             <AntDesign name="adduser" size={24} color="black" />
           </TouchableOpacity>
         </View>
-        {loaded && (
-          <FlatList
-            data={contacts}
-            keyExtractor={(item) => item.user_id}
-            renderItem={({ item }) => (
-              <View style={globalStyle.singlecontainer}>
-                {/* {image && (
-                <Image
-                  source={{
-                    uri: image,
-                  }}
-                  style={styles.image}
-                />
-                )} */}
-                <View style={globalStyle.singlecontainerContent}>
-                  <View style={globalStyle.singlecontainerRow}>
-                    <Text style={styles.name}>
-                      {item.first_name}
-                      {' '}
-                      {item.last_name}
-                    </Text>
-
-                    <TouchableOpacity
-                      onPress={() => blockContact(item.user_id)}
-                      style={styles.btnContainer}
-                    >
-                      <Entypo name="block" size={20} color="black" />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      style={styles.btnContainer}
-                      onPress={() => handleRemoveContact(item.user_id)}
-                    >
-                      <Ionicons
-                        name="remove-circle-outline"
-                        size={24}
-                        color="black"
-                      />
-                    </TouchableOpacity>
-                  </View>
-                  <Text>{item.email}</Text>
-                </View>
-              </View>
-            )}
-          />
-        )}
+        <FlatList
+          data={contacts}
+          renderItem={({ item }) => <ContactItem user={item} />}
+          keyExtractor={(item) => item.user_id}
+        />
       </ScrollView>
+      {/* <FlatList
+        data={searchUser}
+        renderItem={({ item }) => <SearchUserItem user={item} />}
+        keyExtractor={(item) => item.user_id}
+      /> */}
     </View>
   );
 }
