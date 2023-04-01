@@ -1,54 +1,84 @@
-import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
-import React, { useEffect, useState } from "react";
+import {
+  View, Text, Image, StyleSheet, TouchableOpacity,
+} from 'react-native';
+import React, { useEffect, useState } from 'react';
 
-import globalStyle from "../global-style";
-import { AntDesign } from "@expo/vector-icons";
-import axios from "axios";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { AntDesign } from '@expo/vector-icons';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import globalStyle from '../global-style';
+
 export default function SearchUserItem({ user }) {
   const [image, setImage] = useState(null);
 
-  const getProfilePhoto = async (user_id) => {
-    const token = await AsyncStorage.getItem("token");
-    const id = user_id;
+  const getProfilePhoto = async (userId) => {
+    const token = await AsyncStorage.getItem('token');
+    const id = userId;
 
     await axios
-      .get("http://localhost:3333/api/1.0.0/user/" + id + "/photo", {
+      .get(`http://localhost:3333/api/1.0.0/user/${id}/photo`, {
         headers: {
-          "X-Authorization": token,
-          "Content-Type": "image/png",
+          'X-Authorization': token,
+          'Content-Type': 'image/png',
         },
-        responseType: "blob",
+        responseType: 'blob',
       })
-      .then(function (response) {
+      .then((response) => {
         console.log(response);
         const url = URL.createObjectURL(response.data);
         console.log(url);
         setImage(url);
       })
-      .catch(function (error) {
+      .catch((error) => {
         console.log(error.response);
       });
   };
   useEffect(() => {
     getProfilePhoto(user.user_id);
   }, []);
-  const handleAddContact = async (user_id) => {
-    const token = await AsyncStorage.getItem("token");
+  const handleAddContact = async (userId) => {
+    const token = await AsyncStorage.getItem('token');
 
     await axios
-      .post(`http://localhost:3333/api/1.0.0/user/${user_id}/contact`, null, {
+      .post(`http://localhost:3333/api/1.0.0/user/${userId}/contact`, null, {
         headers: {
-          "X-Authorization": token,
+          'X-Authorization': token,
         },
       })
-      .then(function (response) {
+      .then((response) => {
         console.log(response);
       })
-      .catch(function (error) {
+      .catch((error) => {
         console.log(error.response);
       });
   };
+  const styles = StyleSheet.create({
+    container: {
+      flexDirection: 'row',
+      marginHorizontal: 10,
+      marginVertical: 5,
+      height: 70,
+    },
+    image: {
+      width: 60,
+      height: 60,
+      borderRadius: 30,
+      marginRight: 10,
+    },
+    content: {
+      flex: 1,
+
+      borderBottomWidth: StyleSheet.hairlineWidth,
+      borderBottomColor: 'lightgray',
+    },
+
+    name: {
+      flex: 1,
+      fontWeight: 'bold',
+      fontSize: 20,
+    },
+  });
   return (
     <View style={globalStyle.singlecontainer}>
       <Image
@@ -60,10 +90,16 @@ export default function SearchUserItem({ user }) {
       <View style={globalStyle.singlecontainerContent}>
         <View style={globalStyle.singlecontainerRow}>
           <Text numberOfLines={1} style={styles.name}>
-            {user.given_name} {user.family_name}
+            {user.given_name}
+            {' '}
+            {user.family_name}
           </Text>
         </View>
-        <Text>Email: {user.email}</Text>
+        <Text>
+          Email:
+          {' '}
+          {user.email}
+        </Text>
       </View>
       <View style={styles.icon}>
         <TouchableOpacity onPress={() => handleAddContact(user.user_id)}>
@@ -73,29 +109,3 @@ export default function SearchUserItem({ user }) {
     </View>
   );
 }
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    marginHorizontal: 10,
-    marginVertical: 5,
-    height: 70,
-  },
-  image: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    marginRight: 10,
-  },
-  content: {
-    flex: 1,
-
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "lightgray",
-  },
-
-  name: {
-    flex: 1,
-    fontWeight: "bold",
-    fontSize: 20,
-  },
-});

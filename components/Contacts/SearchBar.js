@@ -2,6 +2,7 @@ import React from 'react';
 import {
   View, TextInput, TouchableOpacity, StyleSheet,
 } from 'react-native';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { Ionicons } from '@expo/vector-icons';
 
 function SearchBar({ searchText, setSearchText, searchUsers }) {
