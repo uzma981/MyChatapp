@@ -30,7 +30,6 @@ function AccountScreen(props) {
         },
       })
       .then((response) => {
-        console.log(response);
         setfirstName(response.data.first_name);
         setlastName(response.data.last_name);
         setEmail(response.data.email);
