@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import React, { useState, useEffect } from 'react';
 import {
   Text, View, TouchableOpacity, FlatList,
@@ -28,6 +29,7 @@ function ChatsScreen(props) {
       })
       .catch((error) => {
         console.log(error.response);
+        console.log('No chats');
       });
   };
 

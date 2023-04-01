@@ -3,6 +3,7 @@ import {
   View,
   StyleSheet,
   Image,
+  Text,
   TouchableOpacity,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
@@ -14,9 +15,30 @@ import UpdateForm from '../components/Form/UpdateForm';
 
 function AccountScreen(props) {
   const [image, setImage] = useState(null);
-
+  const [firstName, setfirstName] = useState(null);
+  const [lastName, setlastName] = useState(null);
+  const [email, setEmail] = useState(null);
   const { navigation } = props;
 
+  const getUserInfo = async () => {
+    const token = await AsyncStorage.getItem('token');
+    const id = await AsyncStorage.getItem('id');
+    await axios
+      .get(`http://localhost:3333/api/1.0.0/user/${id}`, {
+        headers: {
+          'X-Authorization': token,
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        setfirstName(response.data.first_name);
+        setlastName(response.data.last_name);
+        setEmail(response.data.email);
+      })
+      .catch((error) => {
+        console.log(error.response);
+      });
+  };
   const getProfilePhoto = async () => {
     const id = await AsyncStorage.getItem('id');
     const token = await AsyncStorage.getItem('token');
@@ -41,6 +63,7 @@ function AccountScreen(props) {
   };
   useEffect(() => {
     getProfilePhoto();
+    getUserInfo();
   }, []);
   async function sendToServer(data) {
     console.log('HERE', data.uri);
@@ -121,6 +144,7 @@ function AccountScreen(props) {
       backgroundColor: 'white',
     },
     profileImage: {
+      marginTop: 15,
       width: 150,
       height: 150,
       borderRadius: 150 / 2,
@@ -144,9 +168,10 @@ function AccountScreen(props) {
     },
     add: {
       backgroundColor: '#41444B',
+      marginTop: 15,
       position: 'absolute',
       bottom: 0,
-      right: 0,
+      right: 30,
       width: 40,
       height: 40,
       borderRadius: 20,
@@ -178,12 +203,13 @@ function AccountScreen(props) {
             />
           </View>
         </TouchableOpacity>
+        <View style={{ padding: 15 }}>
+          <Text style={{ margin: 5 }}>{firstName}</Text>
+          <Text style={{ margin: 5 }}>{lastName}</Text>
+          <Text style={{ margin: 5 }}>{email}</Text>
+        </View>
       </View>
-      <UpdateForm
-        handleUpdate={handleUpdate}
-        navigation={navigation}
-      />
-
+      <UpdateForm handleUpdate={handleUpdate} navigation={navigation} />
     </View>
   );
 }
