@@ -1,40 +1,40 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   welcomecontainer: {
-    width: "100%",
-    height: "100%",
-    justifyContent: "center",
-    alignSelf: "center",
-    alignItems: "center",
-    backgroundColor: "white",
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    alignItems: 'center',
+    backgroundColor: 'white',
   },
   inputBox: {
     height: 40,
-    width: "80%",
-    justifyContent: "center",
+    width: '80%',
+    justifyContent: 'center',
     borderBottomWidth: 1,
-    marginTop: "5%",
+    marginTop: '5%',
   },
   btn: {
     height: 40,
-    width: "80%",
-    backgroundColor: "#fb5b5a",
+    width: '80%',
+    backgroundColor: '#fb5b5a',
     marginBottom: 5,
     marginTop: 20,
     borderRadius: 40,
   },
   btnText: {
-    textAlign: "center",
-    color: "white",
+    textAlign: 'center',
+    color: 'white',
   },
   headerContainer: {
     padding: 10,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   icon: {
-    alignItems: "flex-end",
+    alignItems: 'flex-end',
     marginRight: 16,
     marginBottom: 10,
   },
@@ -42,11 +42,11 @@ export default StyleSheet.create({
     fontSize: 20,
   },
   appcontainer: {
-    backgroundColor: "white",
-    height: "100%",
+    backgroundColor: 'white',
+    height: '100%',
   },
   singlecontainer: {
-    flexDirection: "row",
+    flexDirection: 'row',
     marginHorizontal: 10,
     marginVertical: 5,
     height: 70,
@@ -55,23 +55,23 @@ export default StyleSheet.create({
   singlecontainerContent: {
     flex: 1,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "lightgray",
+    borderBottomColor: 'lightgray',
   },
   singlecontainerRow: {
-    flexDirection: "row",
+    flexDirection: 'row',
     marginBottom: 5,
   },
   btnDisabled: {
-    backgroundColor: "gray",
+    backgroundColor: 'gray',
     opacity: 0.5,
     height: 40,
-    width: "80%",
+    width: '80%',
     marginBottom: 5,
     marginTop: 20,
     borderRadius: 40,
   },
   signupText: {
-    textAlign: "center",
-    color: "black",
+    textAlign: 'center',
+    color: 'black',
   },
 });
