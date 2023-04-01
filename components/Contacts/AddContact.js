@@ -10,6 +10,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { Ionicons } from '@expo/vector-icons';
 import globalStyle from '../global-style';
 import SearchBar from './SearchBar';

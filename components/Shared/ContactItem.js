@@ -9,26 +9,10 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import globalStyle from '../global-style';
 
-export default function ContactItem({ user }) {
+export default function ContactItem({
+  user, contacts, setContacts, handleGetContact,
+}) {
   const [image, setImage] = useState(null);
-  const [contacts, setContacts] = useState([]);
-  const handleGetContact = async () => {
-    const token = await AsyncStorage.getItem('token');
-
-    await axios
-      .get('http://localhost:3333/api/1.0.0/contacts', {
-        headers: {
-          'X-Authorization': token,
-        },
-      })
-      .then((response) => {
-        console.log(response.data);
-        setContacts(response.data);
-      })
-      .catch((error) => {
-        console.log(error.response);
-      });
-  };
   const getProfilePhoto = async (userId) => {
     const token = await AsyncStorage.getItem('token');
     const id = userId;
@@ -53,15 +37,8 @@ export default function ContactItem({ user }) {
   };
   useEffect(() => {
     getProfilePhoto(user.user_id);
-    handleGetContact();
   }, []);
-  // useEffect(() => {
-  //   const unsubscribe = props.navigation.addListener('focus', () => {
-  //     handleGetContact();
-  //     getProfilePhoto(user.user_id);
-  //   });
-  //   return unsubscribe;
-  // }, []);
+
   const handleRemoveContact = async (userId) => {
     const token = await AsyncStorage.getItem('token');
 
