@@ -14,6 +14,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import globalStyle from '../global-style';
 
 export default function Settings(props) {
+  const { navigation } = props;
   const { chatId } = props.route.params;
 
   const [name, setName] = useState('');
@@ -125,7 +126,7 @@ export default function Settings(props) {
   };
 
   useEffect(() => {
-    const unsubscribe = props.navigation.addListener('focus', () => {
+    const unsubscribe = navigation.addListener('focus', () => {
       handleGetContact();
       viewDetails(chatId);
     });

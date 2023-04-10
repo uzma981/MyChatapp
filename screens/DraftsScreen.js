@@ -7,15 +7,16 @@ import {
   FlatList,
   TextInput,
 } from 'react-native';
+
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
 import { useRoute } from '@react-navigation/native';
 import globalStyle from '../components/global-style';
 
-export default function DraftsScreen() {
+export default function DraftsScreen(props) {
   const [drafts, setDrafts] = useState([]);
-
+  const { navigation } = props;
   const [draftMessage, setDraftMessage] = useState('');
   const deleteDraft = async (draft) => {
     try {
@@ -50,6 +51,7 @@ export default function DraftsScreen() {
       )
       .then((response) => {
         console.log(response);
+        navigation.navigate('Single Chat', { chatId });
         deleteDraft(item);
       })
       .catch((error) => {
@@ -83,7 +85,7 @@ export default function DraftsScreen() {
     },
     draftItem: {
       backgroundColor: '#F5F5F5',
-      padding: 5,
+      padding: 10,
       marginVertical: 5,
       borderRadius: 10,
       flexDirection: 'row',
@@ -92,12 +94,14 @@ export default function DraftsScreen() {
     draftText: {
       color: '#A9A9A9',
       flex: 1,
+      fontSize: 14,
+      padding: 10,
       marginHorizontal: 5,
     },
   });
   const renderDraftItem = ({ item, index }) => (
     <View key={index} style={styles.draftItem}>
-      <Ionicons name="document-outline" size={20} color="#A9A9A9" />
+      <Ionicons name="document-outline" size={24} color="#A9A9A9" />
       <TextInput
         onChangeText={(text) => {
           setDraftMessage(text);
@@ -112,13 +116,13 @@ export default function DraftsScreen() {
             event.stopPropagation();
             deleteDraft(item);
           }}
-          style={{ position: 'absolute', right: 0 }}
+          style={{ position: 'absolute', right: 2 }}
         >
-          <Ionicons name="close-circle-outline" size={20} color="#A9A9A9" />
+          <Ionicons name="close-circle-outline" size={24} color="#A9A9A9" />
         </TouchableOpacity>
       ) : (
         <TouchableOpacity
-          onPress={() => sendMessage(item)} // Pass a callback to sendMessage
+          onPress={() => sendMessage(item)}
           style={{ position: 'absolute', right: 0 }}
         >
           <Ionicons name="send" size={20} color="#A9A9A9" />

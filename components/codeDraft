@@ -1,0 +1,14 @@
+//  const saveDraft = async (draft) => {
+//     try {
+//       const storedDrafts = await AsyncStorage.getItem('messageDrafts');
+//       const parsedDrafts = storedDrafts ? JSON.parse(storedDrafts) : [];
+//       const newDrafts = [
+//         ...parsedDrafts,
+//         { id: uuidv4(), draftMessage: draft }, // Add a unique id for each draft item
+//       ];
+//       await AsyncStorage.setItem('messageDrafts', JSON.stringify(newDrafts));
+//     } catch (error) {
+//       console.log(error);
+//     }
+//   };
+// import { v4 as uuidv4 } from 'uuid';
