@@ -10,7 +10,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export default function Logout() {
   const handleLogout = async () => {
     const sessionToken = await AsyncStorage.getItem('token');
-    // const { navigation } = props;
     axios
       .post('http://localhost:3333/api/1.0.0/logout', null, {
         headers: { 'X-Authorization': sessionToken },
@@ -18,8 +17,8 @@ export default function Logout() {
       .then(async (response) => {
         if (response.status === 200) {
           await AsyncStorage.removeItem('token');
-          console.log(response);
           await AsyncStorage.removeItem('id');
+          await AsyncStorage.removeItem('messageDrafts');
           // eslint-disable-next-line no-undef
           navigation.navigate('Login');
         } else if (response.status === 401) {
