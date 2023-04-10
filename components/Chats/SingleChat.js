@@ -19,7 +19,6 @@ export default function ChatScreen(props) {
   const [showDeletePopup, setShowPopup] = useState(false);
   const [itemChange, setItemChange] = useState(null);
   const [message, setMessage] = useState('');
-
   const { chatId } = props.route.params; // get chatId from route params
 
   const viewSingleChat = async (chatIdApi) => {
@@ -86,7 +85,19 @@ export default function ChatScreen(props) {
         console.log(error.response);
       });
   };
-
+  const deleteDraft = async (draft) => {
+    try {
+      const storedDrafts = await AsyncStorage.getItem('messageDrafts');
+      const parsedDrafts = storedDrafts ? JSON.parse(storedDrafts) : [];
+      const updatedDrafts = parsedDrafts.filter((d) => d !== draft);
+      await AsyncStorage.setItem(
+        'messageDrafts',
+        JSON.stringify(updatedDrafts),
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const sendMessage = async () => {
     const token = await AsyncStorage.getItem('token');
 
@@ -105,6 +116,7 @@ export default function ChatScreen(props) {
       .then((response) => {
         console.log(response);
         setMessage(''); // clear the message box
+        deleteDraft(message);
         viewSingleChat(chatId); // refresh the chat messages
       })
       .catch((error) => {
@@ -230,6 +242,11 @@ export default function ChatScreen(props) {
         >
           <AntDesign name="setting" size={24} color="black" />
         </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('DraftsScreen')}
+        >
+          <AntDesign name="save" size={24} color="black" />
+        </TouchableOpacity>
       </View>
       <FlatList
         data={chats.messages}
@@ -254,7 +271,11 @@ export default function ChatScreen(props) {
         </View>
       )}
 
-      <MessageBox message={message} setMessage={setMessage} sendMessage={sendMessage} />
+      <MessageBox
+        message={message}
+        setMessage={setMessage}
+        sendMessage={sendMessage}
+      />
     </View>
   );
 }
