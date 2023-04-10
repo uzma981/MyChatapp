@@ -235,9 +235,16 @@ export default function ChatScreen(props) {
           {chats.name}
         </Text>
       </View>
-      <View style={globalStyle.icon}>
+      <View
+        style={{
+          justifyContent: 'flex-end',
+          flexDirection: 'row',
+          marginRight: 10,
+        }}
+      >
         <TouchableOpacity
           onPress={() => navigation.navigate('Settings', { chatId })}
+          style={{ marginRight: 10 }}
         >
           <AntDesign name="setting" size={24} color="black" />
         </TouchableOpacity>
@@ -247,6 +254,7 @@ export default function ChatScreen(props) {
           <AntDesign name="save" size={24} color="black" />
         </TouchableOpacity>
       </View>
+
       <FlatList
         data={chats.messages}
         keyExtractor={keyExtractor}
