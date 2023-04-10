@@ -39,6 +39,15 @@ function Login(props) {
         if (response.status === 200) {
           await AsyncStorage.setItem('id', response.data.id);
           await AsyncStorage.setItem('token', response.data.token);
+          const messageDraftsJSON = await AsyncStorage.getItem(
+            'messageDrafts',
+          );
+          let messageDrafts = [];
+          if (messageDraftsJSON) {
+            messageDrafts = JSON.parse(messageDraftsJSON);
+            await AsyncStorage.setItem('messageDrafts', messageDrafts);
+          }
+
           props.navigation.navigate('Home');
         }
       })
