@@ -78,7 +78,6 @@ export default function ChatScreen(props) {
       )
       .then((response) => {
         console.log(response);
-
         viewSingleChat(chatId); // refresh the chat messages
       })
       .catch((error) => {
@@ -243,7 +242,7 @@ export default function ChatScreen(props) {
           <AntDesign name="setting" size={24} color="black" />
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => navigation.navigate('DraftsScreen')}
+          onPress={() => navigation.navigate('DraftsScreen', { chatId })}
         >
           <AntDesign name="save" size={24} color="black" />
         </TouchableOpacity>
