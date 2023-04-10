@@ -5,14 +5,57 @@ import {
   View,
   TouchableOpacity,
   FlatList,
+  TextInput,
 } from 'react-native';
+import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
+import { useRoute } from '@react-navigation/native';
 import globalStyle from '../components/global-style';
 
-export default function DraftsScreen({ navigation }) {
+export default function DraftsScreen() {
   const [drafts, setDrafts] = useState([]);
 
+  const [draftMessage, setDraftMessage] = useState('');
+  const deleteDraft = async (draft) => {
+    try {
+      const storedDrafts = await AsyncStorage.getItem('messageDrafts');
+      const parsedDrafts = storedDrafts ? JSON.parse(storedDrafts) : [];
+      const updatedDrafts = parsedDrafts.filter((d) => d !== draft);
+      await AsyncStorage.setItem(
+        'messageDrafts',
+        JSON.stringify(updatedDrafts),
+      );
+      setDrafts(updatedDrafts);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const route = useRoute();
+  const { chatId } = route.params;
+  const sendMessage = async (item) => {
+    const token = await AsyncStorage.getItem('token');
+
+    await axios
+      .post(
+        `http://localhost:3333/api/1.0.0/chat/${chatId}/message`,
+        {
+          message: draftMessage,
+        },
+        {
+          headers: {
+            'X-Authorization': token,
+          },
+        },
+      )
+      .then((response) => {
+        console.log(response);
+        deleteDraft(item);
+      })
+      .catch((error) => {
+        console.log(error.response);
+      });
+  };
   const getDrafts = async () => {
     try {
       const storedDrafts = await AsyncStorage.getItem('messageDrafts');
@@ -24,27 +67,9 @@ export default function DraftsScreen({ navigation }) {
   };
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      getDrafts();
-    });
-    return unsubscribe;
+    getDrafts();
   }, []);
 
-  const deleteDraft = async (draft) => {
-    try {
-      const storedDrafts = await AsyncStorage.getItem('messageDrafts');
-      const parsedDrafts = storedDrafts ? JSON.parse(storedDrafts) : [];
-      const updatedDrafts = parsedDrafts.filter((d) => d !== draft);
-      await AsyncStorage.setItem(
-        'messageDrafts',
-        JSON.stringify(updatedDrafts),
-
-      );
-      setDrafts(updatedDrafts);
-    } catch (error) {
-      console.log(error);
-    }
-  };
   const styles = StyleSheet.create({
     container: {
       alignItems: 'baseline',
@@ -71,28 +96,35 @@ export default function DraftsScreen({ navigation }) {
     },
   });
   const renderDraftItem = ({ item, index }) => (
-    <TouchableOpacity
-      key={index}
-      style={styles.draftItem}
-      onPress={() => {
-        // setMessage(item);
-      }}
-      onLongPress={() => {
-        // on long press = edit
-      }}
-    >
+    <View key={index} style={styles.draftItem}>
       <Ionicons name="document-outline" size={20} color="#A9A9A9" />
-      <Text style={styles.draftText}>{item}</Text>
-      <TouchableOpacity
-        onPress={(event) => {
-          event.stopPropagation();
-          deleteDraft(item);
+      <TextInput
+        onChangeText={(text) => {
+          setDraftMessage(text);
         }}
-        style={{ position: 'absolute', right: 0 }}
-      >
-        <Ionicons name="close-circle-outline" size={20} color="#A9A9A9" />
-      </TouchableOpacity>
-    </TouchableOpacity>
+        value={draftMessage}
+        placeholder={item}
+        style={styles.draftText}
+      />
+      {draftMessage.length === 0 ? (
+        <TouchableOpacity
+          onPress={(event) => {
+            event.stopPropagation();
+            deleteDraft(item);
+          }}
+          style={{ position: 'absolute', right: 0 }}
+        >
+          <Ionicons name="close-circle-outline" size={20} color="#A9A9A9" />
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity
+          onPress={() => sendMessage(item)} // Pass a callback to sendMessage
+          style={{ position: 'absolute', right: 0 }}
+        >
+          <Ionicons name="send" size={20} color="#A9A9A9" />
+        </TouchableOpacity>
+      )}
+    </View>
   );
 
   const keyExtractor = (item) => item.toString();
