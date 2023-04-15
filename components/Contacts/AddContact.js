@@ -72,6 +72,10 @@ function AddContact(props) {
         renderItem={({ item }) => <SearchUserItem user={item} />}
         keyExtractor={(item) => item.user_id}
       />
+      <TouchableOpacity>
+        <Text> Add more</Text>
+      </TouchableOpacity>
+
     </View>
   );
 }
