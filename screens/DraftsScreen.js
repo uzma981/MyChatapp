@@ -106,7 +106,6 @@ export default function DraftsScreen(props) {
         onChangeText={(text) => {
           setDraftMessage(text);
         }}
-        value={draftMessage}
         placeholder={item}
         style={styles.draftText}
       />
