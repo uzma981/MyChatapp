@@ -13,14 +13,7 @@ module.exports = {
   rules: {
     'react/jsx-filename-extension': ['error', { extensions: ['.js', '.js'] }],
     'linebreak-style': ['error', 'windows'],
-    'import/no-extraneous-dependencies': [
-      'error',
-      {
-        devDependencies: false,
-        optionalDependencies: false,
-        peerDependencies: false,
-      },
-    ],
+    'import/no-extraneous-dependencies': ['error', { devDependencies: false, optionalDependencies: false, peerDependencies: false }],
     'react/jsx-no-literals': 'off',
     'react/prop-types': 'off',
     'react/destructuring-assignment': 'off',
