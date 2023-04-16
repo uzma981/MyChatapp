@@ -6,16 +6,36 @@ import {
   TouchableOpacity,
   FlatList,
   TextInput,
+  Modal,
 } from 'react-native';
 
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
 import { useRoute } from '@react-navigation/native';
+import DatePicker from 'react-native-modern-datepicker';
+import DateTimePicker from '@react-native-community/datetimepicker';
+
 import globalStyle from '../components/global-style';
 
 export default function DraftsScreen(props) {
   const [drafts, setDrafts] = useState([]);
+  const [date, setDate] = useState('');
+  const [open, setOpen] = useState(false);
+  const [openTime, setOpenTime] = useState(false);
+  const [time, setTime] = useState(new Date());
+
+  const handleChange = (propDate) => {
+    setDate(propDate);
+  };
+  const handleDate = () => {
+    setOpen(!open);
+  };
+  const handleTimeChange = (event, selectedTime) => {
+    const currentTime = selectedTime || time;
+    setOpenTime(false);
+    setTime(currentTime);
+  };
   const { navigation } = props;
   const [draftMessage, setDraftMessage] = useState('');
   const deleteDraft = async (draft) => {
@@ -98,6 +118,28 @@ export default function DraftsScreen(props) {
       padding: 10,
       marginHorizontal: 5,
     },
+    centeredView: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginTop: 22,
+    },
+    modalView: {
+      margin: 20,
+      backgroundColor: 'white',
+      borderRadius: 20,
+      width: '90%',
+      padding: 35,
+      alignItems: 'center',
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 4,
+      elevation: 5,
+    },
   });
   const renderDraftItem = ({ item, index }) => (
     <View key={index} style={styles.draftItem}>
@@ -144,6 +186,36 @@ export default function DraftsScreen(props) {
           renderItem={renderDraftItem}
         />
       </View>
+      <TouchableOpacity onPress={handleDate}>
+        <Text> Schedule date</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => setOpenTime(true)}>
+        <Text>Select Time</Text>
+      </TouchableOpacity>
+      {openTime && (
+        <DateTimePicker
+          value={time}
+          mode="time"
+          is24Hour
+          display="default"
+          onChange={handleTimeChange}
+        />
+      )}
+
+      <Modal animationType="slide" transparent visible={open}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <DatePicker
+              mode="calendar"
+              selected={date}
+              onDateChange={handleChange}
+            />
+            <TouchableOpacity onPress={handleDate}>
+              <Text> Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
