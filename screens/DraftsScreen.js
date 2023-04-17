@@ -216,6 +216,7 @@ export default function DraftsScreen(props) {
           </View>
         </View>
       </Modal>
+      <Text>{date}</Text>
     </View>
   );
 }
