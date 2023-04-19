@@ -212,8 +212,8 @@ export default function DraftsScreen(props) {
           visible={visible}
           onDismiss={onDismiss}
           onConfirm={onConfirm}
-          hours={12}
-          minutes={14}
+          hours={drafthours}
+          minutes={draftminutes}
         />
       </View>
 
