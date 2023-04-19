@@ -14,7 +14,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
 import { useRoute } from '@react-navigation/native';
 import DatePicker from 'react-native-modern-datepicker';
-import DateTimePicker from '@react-native-community/datetimepicker';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { TimePickerModal } from 'react-native-paper-dates';
 
 import globalStyle from '../components/global-style';
 
@@ -22,8 +23,22 @@ export default function DraftsScreen(props) {
   const [drafts, setDrafts] = useState([]);
   const [date, setDate] = useState('');
   const [open, setOpen] = useState(false);
-  const [openTime, setOpenTime] = useState(false);
-  const [time, setTime] = useState(new Date());
+  const [drafthours, setdraftHours] = useState('');
+  const [draftminutes, setdraftMinutes] = useState('');
+  const [visible, setVisible] = React.useState(false);
+  const onDismiss = React.useCallback(() => {
+    setVisible(false);
+  }, [setVisible]);
+
+  const onConfirm = React.useCallback(
+    ({ hours, minutes }) => {
+      setVisible(false);
+      setdraftHours(hours);
+      setdraftMinutes(minutes);
+      console.log({ hours, minutes });
+    },
+    [setVisible],
+  );
 
   const handleChange = (propDate) => {
     setDate(propDate);
@@ -31,11 +46,7 @@ export default function DraftsScreen(props) {
   const handleDate = () => {
     setOpen(!open);
   };
-  const handleTimeChange = (event, selectedTime) => {
-    const currentTime = selectedTime || time;
-    setOpenTime(false);
-    setTime(currentTime);
-  };
+
   const { navigation } = props;
   const [draftMessage, setDraftMessage] = useState('');
   const deleteDraft = async (draft) => {
@@ -189,18 +200,23 @@ export default function DraftsScreen(props) {
       <TouchableOpacity onPress={handleDate}>
         <Text> Schedule date</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => setOpenTime(true)}>
-        <Text>Select Time</Text>
-      </TouchableOpacity>
-      {openTime && (
-        <DateTimePicker
-          value={time}
-          mode="time"
-          is24Hour
-          display="default"
-          onChange={handleTimeChange}
+
+      <View>
+        <TouchableOpacity
+          onPress={() => setVisible(true)}
+          uppercase={false}
+          mode="outlined"
+        >
+          <Text>Pick a time</Text>
+        </TouchableOpacity>
+        <TimePickerModal
+          visible={visible}
+          onDismiss={onDismiss}
+          onConfirm={onConfirm}
+          hours={12}
+          minutes={14}
         />
-      )}
+      </View>
 
       <Modal animationType="slide" transparent visible={open}>
         <View style={styles.centeredView}>
@@ -217,6 +233,8 @@ export default function DraftsScreen(props) {
         </View>
       </Modal>
       <Text>{date}</Text>
+      <Text>{drafthours}</Text>
+      <Text>{draftminutes}</Text>
     </View>
   );
 }
