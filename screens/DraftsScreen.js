@@ -14,7 +14,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
 import { useRoute } from '@react-navigation/native';
 import DatePicker from 'react-native-modern-datepicker';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { TimePickerModal } from 'react-native-paper-dates';
 
 import globalStyle from '../components/global-style';
