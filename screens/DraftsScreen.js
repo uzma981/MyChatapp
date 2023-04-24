@@ -11,9 +11,10 @@ import {
 
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useRoute } from '@react-navigation/native';
 import DatePicker from 'react-native-modern-datepicker';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { TimePickerModal } from 'react-native-paper-dates';
 
 import globalStyle from '../components/global-style';
@@ -41,9 +42,6 @@ export default function DraftsScreen(props) {
 
   const handleChange = (propDate) => {
     setDate(propDate);
-  };
-  const handleDate = () => {
-    setOpen(!open);
   };
 
   const { navigation } = props;
@@ -88,6 +86,32 @@ export default function DraftsScreen(props) {
         console.log(error.response);
       });
   };
+  const scheduleDraft = (item) => {
+    const scheduledTime = new Date(date);
+    scheduledTime.setHours(drafthours);
+    scheduledTime.setMinutes(draftminutes);
+
+    const currentTime = new Date();
+    const delay = scheduledTime - currentTime;
+
+    if (delay <= 0) {
+      console.log('Scheduled time has already passed.');
+      return;
+    }
+
+    console.log(`Scheduling message for ${scheduledTime} of message ${item}`);
+
+    setTimeout(() => {
+      console.log(item);
+      sendMessage(item);
+    }, delay);
+  };
+  const handleDate = () => {
+    setOpen(!open);
+    // if (draftminutes && drafthours && date != null) {
+    //   scheduleDraft(item);
+    // }
+  };
   const getDrafts = async () => {
     try {
       const storedDrafts = await AsyncStorage.getItem('messageDrafts');
@@ -96,6 +120,9 @@ export default function DraftsScreen(props) {
     } catch (error) {
       console.log(error);
     }
+  };
+  const schedular = (item) => {
+    console.log(item);
   };
 
   useEffect(() => {
@@ -161,22 +188,28 @@ export default function DraftsScreen(props) {
         placeholder={item}
         style={styles.draftText}
       />
+
       {draftMessage.length === 0 ? (
-        <TouchableOpacity
-          onPress={(event) => {
-            event.stopPropagation();
-            deleteDraft(item);
-          }}
-          style={{ position: 'absolute', right: 2 }}
-        >
-          <Ionicons name="close-circle-outline" size={24} color="#A9A9A9" />
-        </TouchableOpacity>
+        <View style={{ flexDirection: 'row', right: 2 }}>
+          <TouchableOpacity
+            onPress={(event) => {
+              event.stopPropagation();
+              deleteDraft(item);
+            }}
+            style={{ position: 'absolute' }}
+          >
+            <Ionicons name="close-circle-outline" size={24} color="#A9A9A9" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={schedular(item)} style={{ marginLeft: 25 }}>
+            <MaterialIcons name="access-time" size={24} color="black" />
+          </TouchableOpacity>
+        </View>
       ) : (
         <TouchableOpacity
           onPress={() => sendMessage(item)}
           style={{ position: 'absolute', right: 0 }}
         >
-          <Ionicons name="send" size={20} color="#A9A9A9" />
+          <Ionicons name="send" size={24} color="#A9A9A9" />
         </TouchableOpacity>
       )}
     </View>
@@ -196,26 +229,6 @@ export default function DraftsScreen(props) {
           renderItem={renderDraftItem}
         />
       </View>
-      <TouchableOpacity onPress={handleDate}>
-        <Text> Schedule date</Text>
-      </TouchableOpacity>
-
-      <View>
-        <TouchableOpacity
-          onPress={() => setVisible(true)}
-          uppercase={false}
-          mode="outlined"
-        >
-          <Text>Pick a time</Text>
-        </TouchableOpacity>
-        <TimePickerModal
-          visible={visible}
-          onDismiss={onDismiss}
-          onConfirm={onConfirm}
-          hours={drafthours}
-          minutes={draftminutes}
-        />
-      </View>
 
       <Modal animationType="slide" transparent visible={open}>
         <View style={styles.centeredView}>
@@ -228,12 +241,43 @@ export default function DraftsScreen(props) {
             <TouchableOpacity onPress={handleDate}>
               <Text> Close</Text>
             </TouchableOpacity>
+            <View>
+              <TouchableOpacity
+                onPress={() => setVisible(true)}
+                uppercase={false}
+                mode="outlined"
+              >
+                <Text>Pick a time</Text>
+              </TouchableOpacity>
+              <TimePickerModal
+                visible={visible}
+                onDismiss={onDismiss}
+                onConfirm={onConfirm}
+                hours={drafthours}
+                minutes={draftminutes}
+              />
+            </View>
+            <TouchableOpacity onPress={scheduleDraft}><Text>Schedule</Text></TouchableOpacity>
           </View>
         </View>
       </Modal>
-      <Text>{date}</Text>
-      <Text>{drafthours}</Text>
-      <Text>{draftminutes}</Text>
+      <View
+        style={{
+          padding: 5,
+          backgroundColor: '#A9A9A9',
+          justifyContent: 'center',
+          alignItems: 'center',
+          marginTop: 10,
+        }}
+      >
+        <TouchableOpacity onPress={scheduleDraft}>
+          <Text>Schedule</Text>
+        </TouchableOpacity>
+        <Text>{date}</Text>
+        <View style={{ flexDirection: 'row' }} />
+        <Text>{drafthours}</Text>
+        <Text>{draftminutes}</Text>
+      </View>
     </View>
   );
 }
