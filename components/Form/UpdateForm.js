@@ -62,16 +62,7 @@ export default function UpdateForm({ handleUpdate, navigation }) {
             value={values.email}
           />
           {errors.email && <Text style={{ color: 'red' }}>{errors.email}</Text>}
-          <TextInput
-            style={globalStyle.inputBox}
-            placeholder="Password"
-            onChangeText={handleChange('password')}
-            value={values.password}
-            secureTextEntry
-          />
-          {errors.password && (
-          <Text style={{ color: 'red' }}>{errors.password}</Text>
-          )}
+
           <TouchableOpacity
             title="Update"
             onPress={handleSubmit}
