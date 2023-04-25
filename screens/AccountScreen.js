@@ -115,9 +115,6 @@ function AccountScreen(props) {
       dataToUpdate.email = values.email;
     }
 
-    if (values.password) {
-      dataToUpdate.password = values.password;
-    }
     axios
       .patch(
         `http://localhost:3333/api/1.0.0/user/${id}`,
@@ -129,6 +126,7 @@ function AccountScreen(props) {
 
       .then((response) => {
         console.log(response);
+        getUserInfo();
       })
       .catch((error) => {
         console.log(error.response);
