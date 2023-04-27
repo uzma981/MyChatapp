@@ -1,14 +1,102 @@
-//  const saveDraft = async (draft) => {
-//     try {
-//       const storedDrafts = await AsyncStorage.getItem('messageDrafts');
-//       const parsedDrafts = storedDrafts ? JSON.parse(storedDrafts) : [];
-//       const newDrafts = [
-//         ...parsedDrafts,
-//         { id: uuidv4(), draftMessage: draft }, // Add a unique id for each draft item
-//       ];
-//       await AsyncStorage.setItem('messageDrafts', JSON.stringify(newDrafts));
-//     } catch (error) {
-//       console.log(error);
-//     }
-//   };
-// import { v4 as uuidv4 } from 'uuid';
+// // const now = new Date();
+// // const updatedDrafts = [
+// //   ...parsedDrafts,
+// //   {
+// //     messageDraft: message,
+// //     createdAt: now,
+// //     scheduledTime: timeSchedule,
+// //   },
+// // ];
+
+//       <Modal animationType="slide" transparent visible={open}>
+//         <View style={styles.centeredView}>
+//           <View style={styles.modalView}>
+//             <DatePicker
+//               mode="calendar"
+//               selected={date}
+//               onDateChange={handleChange}
+//             />
+//             <TouchableOpacity onPress={handleDate}>
+//               <Text> Close</Text>
+//             </TouchableOpacity>
+//             <View>
+//               <TouchableOpacity
+//                 onPress={() => setVisible(true)}
+//                 uppercase={false}
+//                 mode="outlined"
+//               >
+//                 <Text>Pick a time</Text>
+//               </TouchableOpacity>
+//               <TimePickerModal
+//                 visible={visible}
+//                 onDismiss={onDismiss}
+//                 onConfirm={onConfirm}
+//                 hours={drafthours}
+//                 minutes={draftminutes}
+//               />
+//             </View>
+//           </View>
+//         </View>
+//       </Modal>;
+// const handleDate = (item) => {
+//   setOpen(!open);
+//   setTimerMessage(item);
+//   if (draftminutes && drafthours && date != null) {
+//     scheduleDraft(timerMessage);
+//   }
+// };
+// const scheduleDraft = (item) => {
+//   const scheduledTime = new Date(date);
+//   scheduledTime.setHours(drafthours);
+//   scheduledTime.setMinutes(draftminutes);
+
+//   const currentTime = new Date();
+//   const delay = scheduledTime - currentTime;
+
+//   if (delay <= 0) {
+//     console.log('Scheduled time has already passed.');
+//     return;
+//   }
+
+//   console.log(`Scheduling message for ${scheduledTime} of message ${timerMessage}`);
+
+//   setTimeout(() => {
+//     console.log(item);
+//     sendMessage(item);
+//   }, delay);
+// };
+// const handleChange = (propDate) => {
+//   setDate(propDate);
+// };
+// // const draftMessageSelected = (item) => {
+// //   setTimerMessage(item);
+// //   console.log(timerMessage);
+// //   // handleDate();
+// // };
+
+// send message:
+
+//  const sendMessage = async (item) => {
+//    const token = await AsyncStorage.getItem('token');
+
+//    await axios
+//      .post(
+//        `http://localhost:3333/api/1.0.0/chat/${chatId}/message`,
+//        {
+//          message: draftMessage,
+//        },
+//        {
+//          headers: {
+//            'X-Authorization': token,
+//          },
+//        }
+//      )
+//      .then((response) => {
+//        console.log(response);
+//        navigation.navigate('Single Chat', { chatId });
+//        deleteDraft(item);
+//      })
+//      .catch((error) => {
+//        console.log(error.response);
+//      });
+//  };
