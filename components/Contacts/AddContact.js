@@ -22,10 +22,9 @@ function AddContact(props) {
 
   const searchUsers = async () => {
     const token = await AsyncStorage.getItem('token');
-
     try {
       const response = await axios.get(
-        `http://localhost:3333/api/1.0.0/search?q=${searchText}`,
+        `http://localhost:3333/api/1.0.0/search?q=${searchText}&limit=5`,
         {
           headers: {
             'X-Authorization': token,
@@ -72,7 +71,7 @@ function AddContact(props) {
         renderItem={({ item }) => <SearchUserItem user={item} />}
         keyExtractor={(item) => item.user_id}
       />
-      <TouchableOpacity>
+      <TouchableOpacity onPress={searchUsers}>
         <Text> Add more</Text>
       </TouchableOpacity>
 
