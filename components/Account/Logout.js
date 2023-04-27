@@ -18,7 +18,7 @@ export default function Logout() {
         if (response.status === 200) {
           await AsyncStorage.removeItem('token');
           await AsyncStorage.removeItem('id');
-          await AsyncStorage.removeItem('messageDrafts');
+          await AsyncStorage.removeItem('messageDraft');
           // eslint-disable-next-line no-undef
           navigation.navigate('Login');
         } else if (response.status === 401) {

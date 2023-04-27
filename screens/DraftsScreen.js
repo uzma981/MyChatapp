@@ -6,26 +6,38 @@ import {
   TouchableOpacity,
   FlatList,
   TextInput,
-  Modal,
 } from 'react-native';
 
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useRoute } from '@react-navigation/native';
-import DatePicker from 'react-native-modern-datepicker';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { TimePickerModal } from 'react-native-paper-dates';
+import { TimePickerModal, DatePickerModal } from 'react-native-paper-dates';
 
 import globalStyle from '../components/global-style';
 
 export default function DraftsScreen(props) {
   const [drafts, setDrafts] = useState([]);
-  const [date, setDate] = useState('');
-  const [open, setOpen] = useState(false);
+  const [date, setDate] = React.useState(undefined);
   const [drafthours, setdraftHours] = useState('');
   const [draftminutes, setdraftMinutes] = useState('');
   const [visible, setVisible] = React.useState(false);
+  const { navigation } = props;
+  const [draftMessage, setDraftMessage] = useState('');
+  const [open, setOpen] = React.useState(false);
+
+  const onDismissSingle = React.useCallback(() => {
+    setOpen(false);
+  }, [setOpen]);
+
+  const onConfirmSingle = React.useCallback(
+    (params) => {
+      setOpen(false);
+      setDate(params.date);
+    },
+    [setOpen, setDate],
+  );
   const onDismiss = React.useCallback(() => {
     setVisible(false);
   }, [setVisible]);
@@ -39,23 +51,28 @@ export default function DraftsScreen(props) {
     },
     [setVisible],
   );
-
-  const handleChange = (propDate) => {
-    setDate(propDate);
-  };
-
-  const { navigation } = props;
-  const [draftMessage, setDraftMessage] = useState('');
-  const deleteDraft = async (draft) => {
+  const getDrafts = async () => {
     try {
-      const storedDrafts = await AsyncStorage.getItem('messageDrafts');
+      const storedDrafts = await AsyncStorage.getItem('messageDraft');
       const parsedDrafts = storedDrafts ? JSON.parse(storedDrafts) : [];
-      const updatedDrafts = parsedDrafts.filter((d) => d !== draft);
-      await AsyncStorage.setItem(
-        'messageDrafts',
-        JSON.stringify(updatedDrafts),
+      console.log(parsedDrafts);
+      setDrafts(parsedDrafts);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    getDrafts();
+  }, []);
+  const deleteDraft = async (draftId) => {
+    try {
+      const storedDrafts = await AsyncStorage.getItem('messageDraft');
+      const parsedDrafts = storedDrafts ? JSON.parse(storedDrafts) : [];
+      const updatedDrafts = parsedDrafts.filter(
+        (draft) => draft.id !== draftId,
       );
-      setDrafts(updatedDrafts);
+      await AsyncStorage.setItem('messageDraft', JSON.stringify(updatedDrafts));
+      getDrafts();
     } catch (error) {
       console.log(error);
     }
@@ -80,55 +97,12 @@ export default function DraftsScreen(props) {
       .then((response) => {
         console.log(response);
         navigation.navigate('Single Chat', { chatId });
-        deleteDraft(item);
+        deleteDraft(item.id);
       })
       .catch((error) => {
         console.log(error.response);
       });
   };
-  const scheduleDraft = (item) => {
-    const scheduledTime = new Date(date);
-    scheduledTime.setHours(drafthours);
-    scheduledTime.setMinutes(draftminutes);
-
-    const currentTime = new Date();
-    const delay = scheduledTime - currentTime;
-
-    if (delay <= 0) {
-      console.log('Scheduled time has already passed.');
-      return;
-    }
-
-    console.log(`Scheduling message for ${scheduledTime} of message ${item}`);
-
-    setTimeout(() => {
-      console.log(item);
-      sendMessage(item);
-    }, delay);
-  };
-  const handleDate = () => {
-    setOpen(!open);
-    // if (draftminutes && drafthours && date != null) {
-    //   scheduleDraft(item);
-    // }
-  };
-  const getDrafts = async () => {
-    try {
-      const storedDrafts = await AsyncStorage.getItem('messageDrafts');
-      const parsedDrafts = storedDrafts ? JSON.parse(storedDrafts) : [];
-      setDrafts(parsedDrafts);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  const schedular = (item) => {
-    console.log(item);
-  };
-
-  useEffect(() => {
-    getDrafts();
-  }, []);
-
   const styles = StyleSheet.create({
     container: {
       alignItems: 'baseline',
@@ -185,7 +159,7 @@ export default function DraftsScreen(props) {
         onChangeText={(text) => {
           setDraftMessage(text);
         }}
-        placeholder={item}
+        placeholder={item.messageDraft}
         style={styles.draftText}
       />
 
@@ -194,13 +168,18 @@ export default function DraftsScreen(props) {
           <TouchableOpacity
             onPress={(event) => {
               event.stopPropagation();
-              deleteDraft(item);
+              deleteDraft(item.id);
             }}
             style={{ position: 'absolute' }}
           >
             <Ionicons name="close-circle-outline" size={24} color="#A9A9A9" />
           </TouchableOpacity>
-          <TouchableOpacity onPress={schedular(item)} style={{ marginLeft: 25 }}>
+          <TouchableOpacity
+            onPress={() => setVisible(true)}
+            uppercase={false}
+            mode="outlined"
+            style={{ marginLeft: 25 }}
+          >
             <MaterialIcons name="access-time" size={24} color="black" />
           </TouchableOpacity>
         </View>
@@ -215,7 +194,7 @@ export default function DraftsScreen(props) {
     </View>
   );
 
-  const keyExtractor = (item) => item.toString();
+  // const keyExtractor = (item) => item.toString();
 
   return (
     <View style={styles.main}>
@@ -223,44 +202,35 @@ export default function DraftsScreen(props) {
         <Text style={globalStyle.headerText}>Drafts</Text>
       </View>
       <View style={styles.container}>
-        <FlatList
+        <View>
+          <TimePickerModal
+            visible={visible}
+            onDismiss={onDismiss}
+            onConfirm={onConfirm}
+            hours={drafthours}
+            minutes={draftminutes}
+          />
+          <DatePickerModal
+            locale="en"
+            mode="single"
+            visible={open}
+            onDismiss={onDismissSingle}
+            date={date}
+            onConfirm={onConfirmSingle}
+          />
+        </View>
+        {/* <FlatList
           data={drafts}
           keyExtractor={keyExtractor}
+          renderItem={renderDraftItem}
+        /> */}
+        <FlatList
+          data={drafts}
+          keyExtractor={(item) => item.id.toString()}
           renderItem={renderDraftItem}
         />
       </View>
 
-      <Modal animationType="slide" transparent visible={open}>
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <DatePicker
-              mode="calendar"
-              selected={date}
-              onDateChange={handleChange}
-            />
-            <TouchableOpacity onPress={handleDate}>
-              <Text> Close</Text>
-            </TouchableOpacity>
-            <View>
-              <TouchableOpacity
-                onPress={() => setVisible(true)}
-                uppercase={false}
-                mode="outlined"
-              >
-                <Text>Pick a time</Text>
-              </TouchableOpacity>
-              <TimePickerModal
-                visible={visible}
-                onDismiss={onDismiss}
-                onConfirm={onConfirm}
-                hours={drafthours}
-                minutes={draftminutes}
-              />
-            </View>
-            <TouchableOpacity onPress={scheduleDraft}><Text>Schedule</Text></TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
       <View
         style={{
           padding: 5,
@@ -270,13 +240,17 @@ export default function DraftsScreen(props) {
           marginTop: 10,
         }}
       >
-        <TouchableOpacity onPress={scheduleDraft}>
-          <Text>Schedule</Text>
-        </TouchableOpacity>
-        <Text>{date}</Text>
-        <View style={{ flexDirection: 'row' }} />
-        <Text>{drafthours}</Text>
-        <Text>{draftminutes}</Text>
+        <View style={{ flexDirection: 'row' }}>
+          <Text>
+            {drafthours}
+            {' '}
+            :
+          </Text>
+          <Text>
+            {' '}
+            {draftminutes}
+          </Text>
+        </View>
       </View>
     </View>
   );

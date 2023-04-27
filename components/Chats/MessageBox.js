@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   View,
@@ -6,34 +6,35 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, FontAwesome } from '@expo/vector-icons';
 
 function MessageBox({ message, setMessage, sendMessage }) {
-  const [typingTimer, setTypingTimer] = useState(null);
-  const saveDraft = async (draft) => {
+  const timeSchedule = null;
+
+  const saveDraft = async () => {
     try {
-      const storedDrafts = await AsyncStorage.getItem('messageDrafts');
+      const storedDrafts = await AsyncStorage.getItem('messageDraft');
+      const now = new Date();
       const parsedDrafts = storedDrafts ? JSON.parse(storedDrafts) : [];
-      const updatedDrafts = [...parsedDrafts, draft];
+      const newDraft = {
+        id: Math.floor(Math.random() * 1000000),
+        messageDraft: message,
+        createdAt: now,
+        timeScheduled: timeSchedule,
+      };
+      const updatedDrafts = [...parsedDrafts, newDraft];
+
       await AsyncStorage.setItem(
-        'messageDrafts',
+        'messageDraft',
         JSON.stringify(updatedDrafts),
       );
+      setMessage('');
     } catch (error) {
       console.log(error);
     }
   };
-
   const onChangeText = (text) => {
     setMessage(text);
-    clearTimeout(typingTimer);
-    if (text.length > 0) {
-      setTypingTimer(
-        setTimeout(() => {
-          saveDraft(text);
-        }, 5000),
-      );
-    }
   };
 
   const styles = StyleSheet.create({
@@ -91,15 +92,12 @@ function MessageBox({ message, setMessage, sendMessage }) {
             <Ionicons name="send" size={20} color="white" />
           </View>
         </TouchableOpacity>
+        <TouchableOpacity onPress={saveDraft}>
+          <View style={styles.btnContainer}>
+            <FontAwesome name="save" size={20} color="white" />
+          </View>
+        </TouchableOpacity>
       </View>
-      {/* {drafts.length > 0 && (
-        <FlatList
-          data={drafts}
-          renderItem={renderDraftItem}
-          keyExtractor={(item, index) => index.toString()}
-          style={{ maxHeight: 100 }}
-        />
-      )} */}
     </View>
   );
 }

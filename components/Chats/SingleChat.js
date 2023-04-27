@@ -16,7 +16,7 @@ import globalStyle from '../global-style';
 export default function ChatScreen(props) {
   const [chats, setChats] = useState({});
   const [userId, setUserId] = useState(null);
-  const [showDeletePopup, setShowPopup] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
   const [itemChange, setItemChange] = useState(null);
   const [message, setMessage] = useState('');
   const { chatId } = props.route.params; // get chatId from route params
@@ -84,19 +84,7 @@ export default function ChatScreen(props) {
         console.log(error.response);
       });
   };
-  const deleteDraft = async (draft) => {
-    try {
-      const storedDrafts = await AsyncStorage.getItem('messageDrafts');
-      const parsedDrafts = storedDrafts ? JSON.parse(storedDrafts) : [];
-      const updatedDrafts = parsedDrafts.filter((d) => d !== draft);
-      await AsyncStorage.setItem(
-        'messageDrafts',
-        JSON.stringify(updatedDrafts),
-      );
-    } catch (error) {
-      console.log(error);
-    }
-  };
+
   const sendMessage = async () => {
     const token = await AsyncStorage.getItem('token');
 
@@ -115,7 +103,7 @@ export default function ChatScreen(props) {
       .then((response) => {
         console.log(response);
         setMessage(''); // clear the message box
-        deleteDraft(message);
+        // deleteDraft(message);
         viewSingleChat(chatId); // refresh the chat messages
       })
       .catch((error) => {
@@ -261,7 +249,7 @@ export default function ChatScreen(props) {
         renderItem={renderItem}
         inverted
       />
-      {showDeletePopup && (
+      {showPopup && (
         <View style={[styles.popupContainer]}>
           <TouchableOpacity
             style={styles.popupButton}
