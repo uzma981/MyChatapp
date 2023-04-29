@@ -46,6 +46,21 @@ function AddContact(props) {
       marginRight: 8,
       marginBottom: 10,
     },
+    pagination: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      padding: 10,
+      borderTopWidth: 1,
+      borderTopColor: '#ddd',
+    },
+
+    arrowIcon: {
+      fontSize: 28,
+      marginLeft: 10,
+      marginRight: 10,
+      color: 'black',
+    },
   });
 
   const { navigation } = props;
@@ -71,10 +86,15 @@ function AddContact(props) {
         renderItem={({ item }) => <SearchUserItem user={item} />}
         keyExtractor={(item) => item.user_id}
       />
-      <TouchableOpacity onPress={searchUsers}>
-        <Text> Add more</Text>
-      </TouchableOpacity>
+      <View style={styles.pagination}>
+        <TouchableOpacity>
+          <Ionicons name="chevron-back" size={20} color="black" />
+        </TouchableOpacity>
 
+        <TouchableOpacity>
+          <Ionicons name="chevron-forward" size={20} color="black" />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
