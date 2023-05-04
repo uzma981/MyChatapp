@@ -20,8 +20,7 @@ import globalStyle from '../components/global-style';
 export default function DraftsScreen(props) {
   const [drafts, setDrafts] = useState([]);
   const [date, setDate] = React.useState(undefined);
-  const [drafthours, setdraftHours] = useState('');
-  const [draftminutes, setdraftMinutes] = useState('');
+  const [draftTime, setDraftTime] = useState(null);
   const [visible, setVisible] = React.useState(false);
   const { navigation } = props;
   const [draftMessage, setDraftMessage] = useState('');
@@ -45,9 +44,10 @@ export default function DraftsScreen(props) {
   const onConfirm = React.useCallback(
     ({ hours, minutes }) => {
       setVisible(false);
-      setdraftHours(hours);
-      setdraftMinutes(minutes);
-      console.log({ hours, minutes });
+      const selectedTime = new Date();
+      selectedTime.setHours(hours);
+      selectedTime.setMinutes(minutes);
+      setDraftTime(selectedTime);
     },
     [setVisible],
   );
@@ -77,6 +77,7 @@ export default function DraftsScreen(props) {
       console.log(error);
     }
   };
+
   const route = useRoute();
   const { chatId } = route.params;
   const sendMessage = async (item) => {
@@ -102,6 +103,60 @@ export default function DraftsScreen(props) {
       .catch((error) => {
         console.log(error.response);
       });
+  };
+  // const sendScheduledMessage = async (item) => {
+  //   const token = await AsyncStorage.getItem('token');
+
+  //   await axios
+  //     .post(
+  //       `http://localhost:3333/api/1.0.0/chat/${chatId}/message`,
+  //       {
+  //         message: item.messageDraft,
+  //       },
+  //       {
+  //         headers: {
+  //           'X-Authorization': token,
+  //         },
+  //       },
+  //     )
+  //     .then((response) => {
+  //       console.log(response);
+  //       navigation.navigate('Single Chat', { chatId });
+  //       deleteDraft(item.id);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error.response);
+  //     });
+  // };
+
+  const scheduleDraft = async (draft) => {
+    try {
+      const storedDrafts = await AsyncStorage.getItem('messageDraft');
+      const parsedDrafts = storedDrafts ? JSON.parse(storedDrafts) : [];
+      const updatedDrafts = parsedDrafts.map((d) => {
+        if (d.id === draft.id) {
+          return {
+            ...d,
+            timeScheduled: draftTime,
+          };
+        }
+        return d;
+      });
+      await AsyncStorage.setItem(
+        'messageDraft',
+        JSON.stringify(updatedDrafts),
+      );
+      console.log(draftTime);
+      // // Check if the draft should be sent now
+      // const now = new Date();
+      // if (draft.timeScheduled && new Date(draft.timeScheduled) <= now) {
+      //   console.log('Sending scheduled draft');
+      //   // await sendScheduledMessage(draft);
+      //   SendScheduledMessages(draft); // Call a function to send the draft
+      // }
+    } catch (error) {
+      console.log(error);
+    }
   };
   const styles = StyleSheet.create({
     container: {
@@ -175,7 +230,10 @@ export default function DraftsScreen(props) {
             <Ionicons name="close-circle-outline" size={24} color="#A9A9A9" />
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => setVisible(true)}
+            onPress={() => {
+              setVisible(true);
+              scheduleDraft(item);
+            }}
             uppercase={false}
             mode="outlined"
             style={{ marginLeft: 25 }}
@@ -194,8 +252,6 @@ export default function DraftsScreen(props) {
     </View>
   );
 
-  // const keyExtractor = (item) => item.toString();
-
   return (
     <View style={styles.main}>
       <View style={globalStyle.headerContainer}>
@@ -207,8 +263,8 @@ export default function DraftsScreen(props) {
             visible={visible}
             onDismiss={onDismiss}
             onConfirm={onConfirm}
-            hours={drafthours}
-            minutes={draftminutes}
+            hours={14}
+            minutes={10}
           />
           <DatePickerModal
             locale="en"
@@ -240,7 +296,7 @@ export default function DraftsScreen(props) {
           marginTop: 10,
         }}
       >
-        <View style={{ flexDirection: 'row' }}>
+        {/* <View style={{ flexDirection: 'row' }}>
           <Text>
             {drafthours}
             {' '}
@@ -250,7 +306,7 @@ export default function DraftsScreen(props) {
             {' '}
             {draftminutes}
           </Text>
-        </View>
+        </View> */}
       </View>
     </View>
   );
