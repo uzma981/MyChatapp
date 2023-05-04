@@ -17,25 +17,43 @@ import SearchBar from './SearchBar';
 import SearchUserItem from '../Shared/SearchUserItem';
 
 function AddContact(props) {
-  const [searchUser, setSearchUser] = useState(null);
+  const [searchUser, setSearchUser] = useState([]);
   const [searchText, setSearchText] = useState('');
-
-  const searchUsers = async () => {
-    const token = await AsyncStorage.getItem('token');
-    try {
-      const response = await axios.get(
-        `http://localhost:3333/api/1.0.0/search?q=${searchText}&limit=5`,
-        {
-          headers: {
-            'X-Authorization': token,
+  const [errorMsg, setErrorMsg] = useState('');
+  const [offset, setOffset] = useState(0);
+  const [limit, setLimit] = useState(2);
+  const searchUsers = async (button) => {
+    if (searchText === '') {
+      console.log('error');
+      setErrorMsg('Please type in the search bar');
+    } else {
+      const token = await AsyncStorage.getItem('token');
+      try {
+        const response = await axios.get(
+          `http://localhost:3333/api/1.0.0/search?q=${searchText}&limit=${limit}&offset=${
+            // eslint-disable-next-line no-nested-ternary
+            button === 'left' ? offset - limit : button === 'right' ? offset + limit : 0
+          }`,
+          {
+            headers: {
+              'X-Authorization': token,
+            },
           },
-        },
-      );
-      setSearchUser(response.data);
-    } catch (error) {
-      console.log(error);
+        );
+        if (button === 'left') {
+          setOffset(offset - limit);
+        } else if (button === 'right') {
+          setOffset(offset + limit);
+        } else {
+          setOffset(0);
+        }
+        setSearchUser(response.data);
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
+
   const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -81,17 +99,18 @@ function AddContact(props) {
         setSearchText={setSearchText}
         searchUsers={searchUsers}
       />
+      <Text style={{ color: 'red', justifyContent: 'center', alignItems: 'center' }}>{errorMsg}</Text>
       <FlatList
         data={searchUser}
         renderItem={({ item }) => <SearchUserItem user={item} />}
         keyExtractor={(item) => item.user_id}
       />
       <View style={styles.pagination}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => searchUsers('left')}>
           <Ionicons name="chevron-back" size={20} color="black" />
         </TouchableOpacity>
 
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => searchUsers('right')}>
           <Ionicons name="chevron-forward" size={20} color="black" />
         </TouchableOpacity>
       </View>
