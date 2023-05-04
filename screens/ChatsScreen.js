@@ -34,12 +34,13 @@ function ChatsScreen(props) {
   };
 
   useEffect(() => {
-    const unsubscribe = props.navigation.addListener('focus', () => {
+    handleGetChat();
+    const interval = setInterval(() => {
+      console.log('running');
       handleGetChat();
-    });
-    return unsubscribe;
+    }, 5000);
+    return () => clearInterval(interval); // Clean up the interval
   }, []);
-
   return (
     <View style={globalStyle.appcontainer}>
       <View style={globalStyle.headerContainer}>
