@@ -14,7 +14,7 @@ import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useRoute } from '@react-navigation/native';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { TimePickerModal, DatePickerModal } from 'react-native-paper-dates';
-
+import ShowToast from '../components/Shared/Toast';
 import globalStyle from '../components/global-style';
 
 export default function DraftsScreen(props) {
@@ -103,10 +103,11 @@ export default function DraftsScreen(props) {
       )
       .then((response) => {
         console.log(response);
-        navigation.navigate('Single Chat', { chatId });
+        ShowToast('success', 'Draft sent');
         deleteDraft(item.id);
       })
       .catch((error) => {
+        ShowToast('error', 'Draft could not be sent');
         console.log(error.response);
       });
   };
@@ -128,10 +129,12 @@ export default function DraftsScreen(props) {
       .then((response) => {
         console.log(response);
         console.log('sent');
+        ShowToast('success', 'Draft scheduled has been sent');
         // navigation.navigate('Single Chat', { chatId });
         deleteDraft(item.id);
       })
       .catch((error) => {
+        ShowToast('error', 'Draft scheduled could not be sent');
         console.log(error.response);
       });
   };
@@ -160,6 +163,7 @@ export default function DraftsScreen(props) {
         setTimeout(() => {
           sendScheduledMessage(draft);
         }, timeUntilDraft);
+        ShowToast('success', 'Draft scheduled');
         console.log(`Scheduled message to be sent in ${timeUntilDraft}ms`);
       } else {
         console.log('Draft time has already passed');
@@ -216,6 +220,12 @@ export default function DraftsScreen(props) {
       shadowRadius: 4,
       elevation: 5,
     },
+    icon: {
+      alignItems: 'flex-start',
+      marginRight: 16,
+      marginBottom: 10,
+      marginLeft: 8,
+    },
   });
   const renderDraftItem = ({ item, index }) => (
     <View key={index} style={styles.draftItem}>
@@ -270,6 +280,18 @@ export default function DraftsScreen(props) {
     <View style={styles.main}>
       <View style={globalStyle.headerContainer}>
         <Text style={globalStyle.headerText}>Drafts</Text>
+      </View>
+      <View style={styles.icon}>
+        <TouchableOpacity
+          accessible
+          accessibilityLabel="Go back"
+          accessibilityHint="Navigates to the single chats screen"
+          onPress={() => navigation.navigate('Single Chat', { chatId })}
+          //  navigation.navigate('Single Chat', { chatId });
+
+        >
+          <Ionicons name="arrow-back" size={20} color="black" />
+        </TouchableOpacity>
       </View>
       <View style={styles.container}>
         <View>

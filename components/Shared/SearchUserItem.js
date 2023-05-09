@@ -48,10 +48,17 @@ export default function SearchUserItem({ user }) {
       })
       .then((response) => {
         console.log(response);
-        ShowToast('success', 'Contact Added');
+        if (response.data === 'OK') {
+          ShowToast('success', 'Contact Added');
+        } else if (response.data === 'Already a contact') {
+          ShowToast('error', 'Already a contact');
+        }
       })
       .catch((error) => {
-        console.log(error.response);
+        if (error.response.status === 400) {
+          ShowToast('error', 'You cannot add yourself as a contact');
+        }
+        // console.log(error.response);
       });
   };
   const styles = StyleSheet.create({

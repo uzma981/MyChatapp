@@ -79,11 +79,12 @@ export default function Settings(props) {
       )
       .then((response) => {
         console.log(response);
-        ShowToast('success', 'Added user from chat');
+        ShowToast('success', 'Added user to chat');
         viewDetails(chatId);
       })
       .catch((error) => {
-        console.log(error.response);
+        console.log(error);
+        ShowToast('error', 'Already user in chat');
       });
   };
   const handleRemoveUserFromChat = async (chatIdApi, userId) => {
@@ -176,7 +177,7 @@ export default function Settings(props) {
             marginRight: 5,
           }}
           accessible
-          accessibilityLabel="Update name of chat chat"
+          accessibilityLabel="Update name of chat "
           onPress={() => handleUpdateChat(chatId)}
         >
           <Ionicons name="send" size={20} color="white" />
