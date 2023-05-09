@@ -125,15 +125,29 @@ export default function ChatScreen(props) {
     updateMessage(chatId, itemChange.message_id);
     setShowPopup(false);
   };
-
+  // This code registers two event listeners:
+  // one that executes immediately when the screen comes into focus,
+  // and another that runs every 5 seconds.
   useEffect(() => {
     const unsubscribe = props.navigation.addListener('focus', async () => {
       await viewSingleChat(chatId);
       const id = await AsyncStorage.getItem('id');
       setUserId(id);
     });
-    return unsubscribe;
-  }, []);
+
+    const interval = setInterval(async () => {
+      console.log('running single chat');
+      await viewSingleChat(chatId);
+      const id = await AsyncStorage.getItem('id');
+      setUserId(id);
+    }, 5000);
+
+    return () => {
+      unsubscribe();
+      clearInterval(interval);
+    };
+  }, [chatId, props.navigation]);
+
   const styles = StyleSheet.create({
     main: {
       backgroundColor: 'white',

@@ -21,7 +21,7 @@ function AddContact(props) {
   const [searchText, setSearchText] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [offset, setOffset] = useState(0);
-  const [limit, setLimit] = useState(2);
+  const [limit, setLimit] = useState(5);
   const searchUsers = async (button) => {
     if (searchText === '') {
       console.log('error');

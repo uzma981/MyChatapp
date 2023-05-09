@@ -39,7 +39,7 @@ function ChatsScreen(props) {
       console.log('running');
       handleGetChat();
     }, 5000);
-    return () => clearInterval(interval); // Clean up the interval
+    return () => clearInterval(interval);
   }, []);
   return (
     <View style={globalStyle.appcontainer}>
