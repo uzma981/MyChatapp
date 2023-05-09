@@ -13,27 +13,31 @@ function MessageBox({ message, setMessage, sendMessage }) {
   const timeSchedule = null;
 
   const saveDraft = async () => {
-    try {
-      const storedDrafts = await AsyncStorage.getItem('messageDraft');
-      const now = new Date();
-      const parsedDrafts = storedDrafts ? JSON.parse(storedDrafts) : [];
-      const newDraft = {
-        id: Math.floor(Math.random() * 1000000),
-        messageDraft: message,
-        createdAt: now,
-        timeScheduled: timeSchedule,
-      };
-      const updatedDrafts = [...parsedDrafts, newDraft];
+    if (message === '') {
+      ShowToast('error', 'Please write a draft message');
+    } else {
+      try {
+        const storedDrafts = await AsyncStorage.getItem('messageDraft');
+        const now = new Date();
+        const parsedDrafts = storedDrafts ? JSON.parse(storedDrafts) : [];
+        const newDraft = {
+          id: Math.floor(Math.random() * 1000000),
+          messageDraft: message,
+          createdAt: now,
+          timeScheduled: timeSchedule,
+        };
+        const updatedDrafts = [...parsedDrafts, newDraft];
 
-      await AsyncStorage.setItem(
-        'messageDraft',
-        JSON.stringify(updatedDrafts),
-      );
-      setMessage('');
-      ShowToast('success', 'Draft saved');
-    } catch (error) {
-      ShowToast('error', 'Draft could not be saved, please try again later!');
-      console.log(error);
+        await AsyncStorage.setItem(
+          'messageDraft',
+          JSON.stringify(updatedDrafts),
+        );
+        setMessage('');
+        ShowToast('success', 'Draft saved');
+      } catch (error) {
+        ShowToast('error', 'Draft could not be saved, please try again later!');
+        console.log(error);
+      }
     }
   };
   const onChangeText = (text) => {
