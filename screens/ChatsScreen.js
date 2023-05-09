@@ -47,7 +47,11 @@ function ChatsScreen(props) {
         <Text style={globalStyle.headerText}>Chats</Text>
       </View>
       <View style={globalStyle.icon}>
-        <TouchableOpacity onPress={() => navigation.navigate('New Chat')}>
+        <TouchableOpacity
+          accessible
+          accessibilityLabel="Create new chat"
+          onPress={() => navigation.navigate('New Chat')}
+        >
           <Entypo name="new-message" size={24} color="black" />
         </TouchableOpacity>
       </View>

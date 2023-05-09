@@ -245,6 +245,9 @@ export default function ChatScreen(props) {
         }}
       >
         <TouchableOpacity
+          accessible
+          accessibilityLabel="Settings screen"
+          accessibilityHint="Navigates to the settiings screen to add or remove contacts from chat"
           onPress={() => navigation.navigate('Settings', { chatId })}
           style={{ marginRight: 10 }}
         >
@@ -266,12 +269,16 @@ export default function ChatScreen(props) {
       {showPopup && (
         <View style={[styles.popupContainer]}>
           <TouchableOpacity
+            accessible
+            accessibilityLabel="Delete Message"
             style={styles.popupButton}
             onPress={handleDeleteMessage}
           >
             <Text style={styles.popupButton}>Delete Message</Text>
           </TouchableOpacity>
           <TouchableOpacity
+            accessible
+            accessibilityLabel="Update Message"
             style={styles.popupButton}
             onPress={handleUpdateMessage}
           >

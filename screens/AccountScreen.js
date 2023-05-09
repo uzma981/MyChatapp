@@ -190,7 +190,11 @@ function AccountScreen(props) {
           )}
         </View>
 
-        <TouchableOpacity onPress={() => uploadProfilePhoto()}>
+        <TouchableOpacity
+          accessible
+          accessibilityLabel="Upload profile photo"
+          onPress={() => uploadProfilePhoto()}
+        >
           <View style={styles.add}>
             <Ionicons
               name="add-outline"

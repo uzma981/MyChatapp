@@ -78,12 +78,18 @@ export default function NewChat(props) {
         <Text style={styles.headerText}>Add New Chat</Text>
       </View>
       <View style={styles.icon}>
-        <TouchableOpacity onPress={() => navigation.navigate('Chat')}>
+        <TouchableOpacity
+          accessible
+          accessibilityLabel="Go back"
+          accessibilityHint="Navigates to the main chats screen"
+          onPress={() => navigation.navigate('Chat')}
+        >
           <Ionicons name="arrow-back" size={20} color="black" />
         </TouchableOpacity>
       </View>
       <View style={styles.convoContainer}>
         <TextInput
+          accessibilityLabel="input name to start new convo"
           style={styles.textContainer}
           placeholder="Start a new conversation..."
           onChangeText={(text) => {
@@ -92,6 +98,9 @@ export default function NewChat(props) {
           value={name}
         />
         <TouchableOpacity
+          accessible
+          accessibilityLabel="Create new chat"
+          accessibilityHint="Navigates to the main chats screen after creating new chat"
           title="Create"
           onPress={() => {
             addChat();

@@ -170,6 +170,8 @@ export default function Settings(props) {
             alignItems: 'center',
             marginRight: 5,
           }}
+          accessible
+          accessibilityLabel="Update name of chat chat"
           onPress={() => handleUpdateChat(chatId)}
         >
           <Ionicons name="send" size={20} color="white" />
@@ -193,6 +195,8 @@ export default function Settings(props) {
             </View>
             <View style={globalStyle.icon}>
               <TouchableOpacity
+                accessible
+                accessibilityLabel="Remove user from chat"
                 onPress={() => handleRemoveUserFromChat(chatId, member.user_id)}
               >
                 <Ionicons
@@ -232,6 +236,8 @@ export default function Settings(props) {
             </View>
             <View style={styles.icon}>
               <TouchableOpacity
+                accessible
+                accessibilityLabel="Add user from chat"
                 onPress={() => handleAddUserToChat(chatId, contact.user_id)}
               >
                 <AntDesign name="adduser" size={24} color="black" />

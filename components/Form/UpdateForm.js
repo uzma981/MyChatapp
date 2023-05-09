@@ -64,6 +64,8 @@ export default function UpdateForm({ handleUpdate, navigation }) {
           {errors.email && <Text style={{ color: 'red' }}>{errors.email}</Text>}
 
           <TouchableOpacity
+            accessible
+            accessibilityLabel="Update your details"
             title="Update"
             onPress={handleSubmit}
             style={globalStyle.btn}

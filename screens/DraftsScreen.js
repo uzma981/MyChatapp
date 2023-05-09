@@ -231,6 +231,8 @@ export default function DraftsScreen(props) {
       {draftMessage.length === 0 ? (
         <View style={{ flexDirection: 'row', right: 2 }}>
           <TouchableOpacity
+            accessible
+            accessibilityLabel="Delete draft"
             onPress={(event) => {
               event.stopPropagation();
               deleteDraft(item.id);
@@ -240,6 +242,8 @@ export default function DraftsScreen(props) {
             <Ionicons name="close-circle-outline" size={24} color="#A9A9A9" />
           </TouchableOpacity>
           <TouchableOpacity
+            accessible
+            accessibilityLabel="Schedule Draft"
             onPress={() => {
               setVisible(true);
               scheduleDraft(item);
