@@ -12,6 +12,7 @@ import { AntDesign, Ionicons } from '@expo/vector-icons';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import globalStyle from '../global-style';
+import ShowToast from '../Shared/Toast';
 
 export default function Settings(props) {
   const { navigation } = props;
@@ -56,6 +57,7 @@ export default function Settings(props) {
 
       .then((response) => {
         console.log(response);
+        ShowToast('success', 'Chat name updated');
       })
       .catch((error) => {
         console.log(error.response);
@@ -77,6 +79,7 @@ export default function Settings(props) {
       )
       .then((response) => {
         console.log(response);
+        ShowToast('success', 'Added user from chat');
         viewDetails(chatId);
       })
       .catch((error) => {
@@ -101,6 +104,8 @@ export default function Settings(props) {
         const updatedUsersinchat = userinChat.filter(
           (user) => user.user_id !== userId,
         );
+        ShowToast('success', 'Removed user from chat');
+
         setuserinChat(updatedUsersinchat);
       })
       .catch((error) => {

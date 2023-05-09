@@ -11,6 +11,7 @@ import { Ionicons } from '@expo/vector-icons';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState } from 'react';
+import ShowToast from '../Shared/Toast';
 import globalStyle from '../global-style';
 
 export default function NewChat(props) {
@@ -38,6 +39,7 @@ export default function NewChat(props) {
       .then((response) => {
         if (response.status === 201) {
           navigation.navigate('Chat');
+          ShowToast('success', 'New chat created');
         }
         console.log(response);
       })

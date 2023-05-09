@@ -6,6 +6,7 @@ import {
 } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import ShowToast from '../Shared/Toast';
 
 export default function Logout() {
   const handleLogout = async () => {
@@ -21,10 +22,12 @@ export default function Logout() {
           await AsyncStorage.removeItem('messageDraft');
           // eslint-disable-next-line no-undef
           navigation.navigate('Login');
+          ShowToast('success', 'Successfully Logged out');
         } else if (response.status === 401) {
           console.log('401 error, unauthorised');
         } else if (response.status === 500) {
           console.log('500 error, server error');
+          ShowToast('error', 'Unsuccessful: Please try again later!');
         }
       });
   };

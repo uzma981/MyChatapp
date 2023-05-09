@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoginForm from '../components/Form/LoginForm';
+import ShowToast from '../components/Shared/Toast';
 
 function Login(props) {
   const checkLoggedIn = async () => {
@@ -47,7 +48,7 @@ function Login(props) {
             messageDrafts = JSON.parse(messageDraftsJSON);
             await AsyncStorage.setItem('messageDrafts', messageDrafts);
           }
-
+          ShowToast('success', 'Successfully Logged in');
           props.navigation.navigate('Home');
         }
       })

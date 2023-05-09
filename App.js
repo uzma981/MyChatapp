@@ -1,6 +1,8 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
+// eslint-disable-next-line import/no-unresolved
+import Toast from 'react-native-toast-message';
 import Login from './navigation/Login';
 import SignUp from './navigation/SignUp';
 
@@ -28,6 +30,7 @@ export default function App() {
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
+      <Toast />
     </NavigationContainer>
   );
 }

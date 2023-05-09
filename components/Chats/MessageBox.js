@@ -7,6 +7,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
+import ShowToast from '../Shared/Toast';
 
 function MessageBox({ message, setMessage, sendMessage }) {
   const timeSchedule = null;
@@ -29,7 +30,9 @@ function MessageBox({ message, setMessage, sendMessage }) {
         JSON.stringify(updatedDrafts),
       );
       setMessage('');
+      ShowToast('success', 'Draft saved');
     } catch (error) {
+      ShowToast('error', 'Draft could not be saved, please try again later!');
       console.log(error);
     }
   };

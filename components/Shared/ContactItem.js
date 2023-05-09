@@ -2,11 +2,11 @@ import {
   View, Text, Image, StyleSheet, TouchableOpacity,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
-
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { Entypo, Ionicons } from '@expo/vector-icons';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import ShowToast from './Toast';
 import globalStyle from '../global-style';
 
 export default function ContactItem({
@@ -54,10 +54,12 @@ export default function ContactItem({
         const updatedContacts = contacts.filter(
           (contact) => contact.user_id !== userId,
         );
+        ShowToast('success', 'Contact Removed');
         setContacts(updatedContacts);
         handleGetContact();
       })
       .catch((error) => {
+        ShowToast('error', 'Contact could not be removed, please try again later!');
         console.log(error.response);
       });
   };
@@ -74,6 +76,7 @@ export default function ContactItem({
         const updatedContacts = contacts.filter(
           (contact) => contact.user_id !== userId,
         );
+        ShowToast('success', 'Contact Blocked');
         setContacts(updatedContacts);
         handleGetContact();
       })

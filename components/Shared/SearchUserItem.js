@@ -2,11 +2,11 @@ import {
   View, Text, Image, StyleSheet, TouchableOpacity,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
-
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { AntDesign } from '@expo/vector-icons';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import ShowToast from './Toast';
 import globalStyle from '../global-style';
 
 export default function SearchUserItem({ user }) {
@@ -48,6 +48,7 @@ export default function SearchUserItem({ user }) {
       })
       .then((response) => {
         console.log(response);
+        ShowToast('success', 'Contact Added');
       })
       .catch((error) => {
         console.log(error.response);

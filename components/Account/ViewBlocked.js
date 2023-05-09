@@ -6,12 +6,10 @@ import {
   Text,
   ScrollView,
 } from 'react-native';
-
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
 import axios from 'axios';
-
+import ShowToast from '../Shared/Toast';
 import globalStyle from '../global-style';
 
 export default function ViewBlocked(props) {
@@ -55,6 +53,7 @@ export default function ViewBlocked(props) {
         const updatedContacts = contacts.filter(
           (contact) => contact.user_id !== userId,
         );
+        ShowToast('success', 'Contact unblocked');
         setContacts(updatedContacts);
       })
       .catch((error) => {

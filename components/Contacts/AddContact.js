@@ -15,17 +15,18 @@ import { Ionicons } from '@expo/vector-icons';
 import globalStyle from '../global-style';
 import SearchBar from './SearchBar';
 import SearchUserItem from '../Shared/SearchUserItem';
+import ShowToast from '../Shared/Toast';
 
 function AddContact(props) {
   const [searchUser, setSearchUser] = useState([]);
   const [searchText, setSearchText] = useState('');
-  const [errorMsg, setErrorMsg] = useState('');
+
   const [offset, setOffset] = useState(0);
-  const [limit, setLimit] = useState(5);
+  const [limit, setLimit] = useState(0);
   const searchUsers = async (button) => {
+    setLimit(5);
     if (searchText === '') {
-      console.log('error');
-      setErrorMsg('Please type in the search bar');
+      ShowToast('error', 'Please type in the search bar');
     } else {
       const token = await AsyncStorage.getItem('token');
       try {
@@ -99,7 +100,7 @@ function AddContact(props) {
         setSearchText={setSearchText}
         searchUsers={searchUsers}
       />
-      <Text style={{ color: 'red', justifyContent: 'center', alignItems: 'center' }}>{errorMsg}</Text>
+
       <FlatList
         data={searchUser}
         renderItem={({ item }) => <SearchUserItem user={item} />}
