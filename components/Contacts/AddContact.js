@@ -22,9 +22,8 @@ function AddContact(props) {
   const [searchText, setSearchText] = useState('');
 
   const [offset, setOffset] = useState(0);
-  const [limit, setLimit] = useState(0);
+  const [limit, setLimit] = useState(4);
   const searchUsers = async (button) => {
-    setLimit(5);
     if (searchText === '') {
       ShowToast('error', 'Please type in the search bar');
     } else {

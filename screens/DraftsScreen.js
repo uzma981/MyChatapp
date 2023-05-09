@@ -323,27 +323,6 @@ export default function DraftsScreen(props) {
         />
       </View>
 
-      <View
-        style={{
-          padding: 5,
-          backgroundColor: '#A9A9A9',
-          justifyContent: 'center',
-          alignItems: 'center',
-          marginTop: 10,
-        }}
-      >
-        {/* <View style={{ flexDirection: 'row' }}>
-          <Text>
-            {drafthours}
-            {' '}
-            :
-          </Text>
-          <Text>
-            {' '}
-            {draftminutes}
-          </Text>
-        </View> */}
-      </View>
     </View>
   );
 }
