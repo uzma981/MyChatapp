@@ -61,8 +61,14 @@ export default function DraftsScreen(props) {
       console.log(error);
     }
   };
+  // useEffect(() => {
+  //   getDrafts();
+  // }, []);
   useEffect(() => {
-    getDrafts();
+    const unsubscribe = props.navigation.addListener('focus', async () => {
+      await getDrafts();
+    });
+    return unsubscribe;
   }, []);
   const deleteDraft = async (draftId) => {
     try {
@@ -104,30 +110,31 @@ export default function DraftsScreen(props) {
         console.log(error.response);
       });
   };
-  // const sendScheduledMessage = async (item) => {
-  //   const token = await AsyncStorage.getItem('token');
+  const sendScheduledMessage = async (item) => {
+    const token = await AsyncStorage.getItem('token');
 
-  //   await axios
-  //     .post(
-  //       `http://localhost:3333/api/1.0.0/chat/${chatId}/message`,
-  //       {
-  //         message: item.messageDraft,
-  //       },
-  //       {
-  //         headers: {
-  //           'X-Authorization': token,
-  //         },
-  //       },
-  //     )
-  //     .then((response) => {
-  //       console.log(response);
-  //       navigation.navigate('Single Chat', { chatId });
-  //       deleteDraft(item.id);
-  //     })
-  //     .catch((error) => {
-  //       console.log(error.response);
-  //     });
-  // };
+    await axios
+      .post(
+        `http://localhost:3333/api/1.0.0/chat/${chatId}/message`,
+        {
+          message: item.messageDraft,
+        },
+        {
+          headers: {
+            'X-Authorization': token,
+          },
+        },
+      )
+      .then((response) => {
+        console.log(response);
+        console.log('sent');
+        // navigation.navigate('Single Chat', { chatId });
+        deleteDraft(item.id);
+      })
+      .catch((error) => {
+        console.log(error.response);
+      });
+  };
 
   const scheduleDraft = async (draft) => {
     try {
@@ -142,18 +149,21 @@ export default function DraftsScreen(props) {
         }
         return d;
       });
-      await AsyncStorage.setItem(
-        'messageDraft',
-        JSON.stringify(updatedDrafts),
-      );
+      await AsyncStorage.setItem('messageDraft', JSON.stringify(updatedDrafts));
       console.log(draftTime);
-      // // Check if the draft should be sent now
-      // const now = new Date();
-      // if (draft.timeScheduled && new Date(draft.timeScheduled) <= now) {
-      //   console.log('Sending scheduled draft');
-      //   // await sendScheduledMessage(draft);
-      //   SendScheduledMessages(draft); // Call a function to send the draft
-      // }
+
+      const now = new Date();
+      const draftDate = new Date(draftTime);
+      const timeUntilDraft = draftDate.getTime() - now.getTime();
+      if (timeUntilDraft > 0) {
+      // Schedule the message
+        setTimeout(() => {
+          sendScheduledMessage(draft);
+        }, timeUntilDraft);
+        console.log(`Scheduled message to be sent in ${timeUntilDraft}ms`);
+      } else {
+        console.log('Draft time has already passed');
+      }
     } catch (error) {
       console.log(error);
     }
