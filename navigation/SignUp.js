@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import SignUpForm from '../components/Form/SignUpForm';
+import ShowToast from '../components/Shared/Toast';
 
 export default function SignUp(props) {
   const { navigation } = props;
@@ -15,6 +16,7 @@ export default function SignUp(props) {
 
       .then((response) => {
         console.log(response);
+        ShowToast('success', 'Successful: You have created a new account!');
         navigation.navigate('Login');
       })
       .catch((error) => {
